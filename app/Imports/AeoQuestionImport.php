@@ -3,11 +3,10 @@
 namespace App\Imports;
 
 use App\Models\AeoQuestion;
-use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Concerns\Importable;
 
 class AeoQuestionImport implements ToModel, WithHeadingRow, WithValidation
 {
@@ -26,7 +25,7 @@ class AeoQuestionImport implements ToModel, WithHeadingRow, WithValidation
     public function rules(): array
     {
         return [
-            'subcriteria' => 'required|string|max:255|unique:aeo_questions,subcriteria',
+            'subcriteria' => 'required|string|max:255',
             'question' => 'required|string',
             'keterangan' => 'nullable|string',
         ];

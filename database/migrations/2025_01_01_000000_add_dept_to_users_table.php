@@ -1,18 +1,23 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('dept', 100)->default('GENERAL')->index();
+        });
+    }
 
-return new class extends Migration {
-public function up(): void {
-Schema::table('users', function (Blueprint $table) {
-$table->string('dept', 100)->default('GENERAL')->index();
-});
-}
-public function down(): void {
-Schema::table('users', function (Blueprint $table) {
-$table->dropColumn('dept');
-});
-}
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropIndex(['dept']); // Drop the index first
+            $table->dropColumn('dept');
+        });
+    }
 };

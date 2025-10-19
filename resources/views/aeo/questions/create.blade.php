@@ -42,6 +42,14 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="jawaban" class="form-label">Jawaban</label>
+                                <textarea class="form-control @error('jawaban') is-invalid @enderror" id="jawaban" name="jawaban" rows="3">{{ old('jawaban') }}</textarea>
+                                @error('jawaban')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- <div class="mb-3">
                                 <label for="files" class="form-label">Files</label>
                                 <input type="file" class="form-control @error('files.*') is-invalid @enderror"
                                     id="files" name="files[]" multiple>
@@ -49,7 +57,7 @@
                                 @error('files.*')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                            </div>
+                            </div> --}}
 
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 <a href="{{ route('aeo.questions.index') }}" class="btn btn-secondary me-md-2">

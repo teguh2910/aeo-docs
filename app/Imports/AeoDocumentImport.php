@@ -5,10 +5,10 @@ namespace App\Imports;
 use App\Models\AeoDocument;
 use App\Models\AeoQuestion;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Concerns\Importable;
 
 class AeoDocumentImport implements ToModel, WithHeadingRow, WithValidation
 {
@@ -23,7 +23,7 @@ class AeoDocumentImport implements ToModel, WithHeadingRow, WithValidation
             ->orWhere('question', $row['question'])
             ->first();
 
-        if (!$question) {
+        if (! $question) {
             // Skip if question not found
             return null;
         }
@@ -43,9 +43,9 @@ class AeoDocumentImport implements ToModel, WithHeadingRow, WithValidation
     {
         return [
             'subcriteria' => 'required|string|max:255',
-            'question' => 'nullable|string|max:255',
+            'question' => 'nullable|string',
             'dept' => 'nullable|string|max:100',
-            'nama_dokumen' => 'required|string|max:255',
+            'nama_dokumen' => 'nullable|string|max:255',
             'no_sop_wi_std_form_other' => 'nullable|string|max:255',
         ];
     }

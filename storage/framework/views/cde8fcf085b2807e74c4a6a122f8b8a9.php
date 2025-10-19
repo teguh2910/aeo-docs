@@ -4,11 +4,16 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <title>AEO Docs</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css" rel="stylesheet">
+    <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 
 <body class="bg-light">
@@ -56,10 +61,10 @@
 
     <!-- Main Content -->
     <main class="py-4">
-        <?php if(session('ok')): ?>
+        <?php if(session('success') || session('ok')): ?>
             <div class="container">
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle"></i> <?php echo e(session('ok')); ?>
+                    <i class="fas fa-check-circle"></i> <?php echo e(session('success') ?? session('ok')); ?>
 
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
@@ -83,8 +88,22 @@
         <?php echo $__env->yieldContent('content'); ?>
     </main>
 
+    <!-- jQuery (required for DataTables) -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <!-- DataTables Buttons -->
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 
 </html>
