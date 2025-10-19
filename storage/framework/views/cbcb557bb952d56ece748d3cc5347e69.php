@@ -25,6 +25,19 @@
                         </h4>
                     </div>
                     <div class="card-body">
+                        <?php
+                            $userDept = auth()->user()->dept ?? 'GENERAL';
+                            $canApprove = in_array($userDept, ['AEO', 'admin']);
+                        ?>
+
+                        <?php if($canApprove): ?>
+                            <div class="alert alert-info mb-3">
+                                <i class="fas fa-shield-alt"></i>
+                                <strong>AEO Manager Access:</strong> You have approval permissions and can see questions
+                                from all departments.
+                            </div>
+                        <?php endif; ?>
+
                         <div class="mb-3">
                             <div class="d-flex gap-2">
                                 <a href="<?php echo e(route('aeo.questions.import.form')); ?>" class="btn btn-success">
@@ -139,77 +152,93 @@
                                                         </div>
                                                 </td>
 
-                                                <!-- COLUMN: FINAL VALIDASI BY AEO MGR -->
-                                                <td class="text-center">
-                                                    <?php
-                                                        $hasValidatedDocs =
-                                                            $row->documents
-                                                                ->where('aeo_manager_validated_at', '!=', null)
-                                                                ->count() > 0;
-                                                        $allValid = $row->documents->every(
-                                                            fn($doc) => $doc->aeo_manager_valid === true,
-                                                        );
-                                                        $hasInvalid = $row->documents->some(
-                                                            fn($doc) => $doc->aeo_manager_valid === false,
-                                                        );
-                                                    ?>
+                                <!-- COLUMN: FINAL VALIDASI BY AEO MGR -->
+                                <td class="text-center">
+                                    <?php
+                                        $hasValidatedDocs =
+                                            $row->documents
+                                                ->where('aeo_manager_validated_at', '!=', null)
+                                                ->count() > 0;
+                                        $allValid = $row->documents->every(
+                                            fn($doc) => $doc->aeo_manager_valid === true,
+                                        );
+                                        $hasInvalid = $row->documents->some(
+                                            fn($doc) => $doc->aeo_manager_valid === false,
+                                        );
+                                        $canValidateAeoManager = in_array($userDept, ['AEO', 'admin']);
+                                    ?>
 
-                                                    <?php if($hasValidatedDocs): ?>
-                                                        <?php if($allValid): ?>
-                                                            <span class="badge bg-success">Sesuai</span>
-                                                            <br>
-                                                            <button type="button"
-                                                                class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
-                                                                data-question-id="<?php echo e($row->id); ?>"
-                                                                title="Undo All AEO Manager Validations">
-                                                                <i class="fas fa-undo"></i> Undo All
-                                                            </button>
-                                                        <?php elseif($hasInvalid): ?>
-                                                            <span class="badge bg-danger">Tidak Sesuai</span>
-                                                            <br>
-                                                            <button type="button"
-                                                                class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
-                                                                data-question-id="<?php echo e($row->id); ?>"
-                                                                title="Undo All AEO Manager Validations">
-                                                                <i class="fas fa-undo"></i> Undo All
-                                                            </button>
-                                                            <?php if($row->documents->where('aeo_manager_valid', false)->first()?->due_date): ?>
-                                                                <br><small class="text-muted">Due:
-                                                                    <?php echo e($row->documents->where('aeo_manager_valid', false)->first()->due_date); ?></small>
-                                                            <?php endif; ?>
-                                                        <?php else: ?>
-                                                            <span class="badge bg-warning">Partial</span>
-                                                            <br>
-                                                            <button type="button"
-                                                                class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
-                                                                data-question-id="<?php echo e($row->id); ?>"
-                                                                title="Undo All AEO Manager Validations">
-                                                                <i class="fas fa-undo"></i> Undo All
-                                                            </button>
-                                                        <?php endif; ?>
-                                                    <?php else: ?>
-                                                        <div class="btn-group-vertical gap-1">
-                                                            <button type="button"
-                                                                class="btn btn-success btn-sm aeo-validation-btn"
-                                                                data-question-id="<?php echo e($row->id); ?>"
-                                                                data-status="sesuai">
-                                                                <i class="fas fa-check"></i> Sesuai
-                                                            </button>
-                                                            <button type="button"
-                                                                class="btn btn-danger btn-sm aeo-validation-btn"
-                                                                data-question-id="<?php echo e($row->id); ?>"
-                                                                data-status="tidak_sesuai" data-bs-toggle="modal"
-                                                                data-bs-target="#aeoValidationModal">
-                                                                <i class="fas fa-times"></i> Tidak Sesuai
-                                                            </button>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </td>
-
-
+                                    <?php if($hasValidatedDocs): ?>
+                                        <?php if($allValid): ?>
+                                            <span class="badge bg-success">Sesuai</span>
+                                            <?php if($canValidateAeoManager): ?>
+                                                <br>
+                                                <button type="button"
+                                                    class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
+                                                    data-question-id="<?php echo e($row->id); ?>"
+                                                    title="Undo All AEO Manager Validations">
+                                                    <i class="fas fa-undo"></i> Undo All
+                                                </button>
+                                            <?php endif; ?>
+                                        <?php elseif($hasInvalid): ?>
+                                            <span class="badge bg-danger">Tidak Sesuai</span>
+                                            <?php if($canValidateAeoManager): ?>
+                                                <br>
+                                                <button type="button"
+                                                    class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
+                                                    data-question-id="<?php echo e($row->id); ?>"
+                                                    title="Undo All AEO Manager Validations">
+                                                    <i class="fas fa-undo"></i> Undo All
+                                                </button>
+                                            <?php endif; ?>
+                                            <?php if($row->documents->where('aeo_manager_valid', false)->first()?->due_date): ?>
+                                                <br><small class="text-muted">Due:
+                                                    <?php echo e($row->documents->where('aeo_manager_valid', false)->first()->due_date); ?></small>
+                                            <?php endif; ?>
+                                        <?php else: ?>
+                                            <span class="badge bg-warning">Partial</span>
+                                            <?php if($canValidateAeoManager): ?>
+                                                <br>
+                                                <button type="button"
+                                                    class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
+                                                    data-question-id="<?php echo e($row->id); ?>"
+                                                    title="Undo All AEO Manager Validations">
+                                                    <i class="fas fa-undo"></i> Undo All
+                                                </button>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <?php if($canValidateAeoManager): ?>
+                                            <div class="btn-group-vertical gap-1">
+                                                <button type="button"
+                                                    class="btn btn-success btn-sm aeo-validation-btn"
+                                                    data-question-id="<?php echo e($row->id); ?>"
+                                                    data-status="sesuai">
+                                                    <i class="fas fa-check"></i> Sesuai
+                                                </button>
+                                                <button type="button"
+                                                    class="btn btn-danger btn-sm aeo-validation-btn"
+                                                    data-question-id="<?php echo e($row->id); ?>"
+                                                    data-status="tidak_sesuai" data-bs-toggle="modal"
+                                                    data-bs-target="#aeoValidationModal">
+                                                    <i class="fas fa-times"></i> Tidak Sesuai
+                                                </button>
+                                            </div>
+                                        <?php else: ?>
+                                            <span class="badge bg-secondary">
+                                                <i class="fas fa-lock"></i> AEO Access Only
+                                            </span>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </td>
 
                                                 <!-- COLUMN: APPROVAL -->
                                                 <td class="text-center">
+                                                    <?php
+                                                        $userDept = auth()->user()->dept ?? 'GENERAL';
+                                                        $canApprove = in_array($userDept, ['AEO', 'admin']);
+                                                    ?>
+
                                                     <div class="btn-group-vertical gap-1">
                                                         <?php if($row->approval_1 === true): ?>
                                                             <div class="mb-2">
@@ -227,12 +256,18 @@
                                                                 <?php endif; ?>
                                                             </div>
                                                         <?php else: ?>
-                                                            <button type="button"
-                                                                class="btn btn-primary btn-sm approval-btn"
-                                                                data-question-id="<?php echo e($row->id); ?>"
-                                                                data-approval-type="1">
-                                                                <i class="fas fa-check"></i> Approval 1
-                                                            </button>
+                                                            <?php if($canApprove): ?>
+                                                                <button type="button"
+                                                                    class="btn btn-primary btn-sm approval-btn"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
+                                                                    data-approval-type="1">
+                                                                    <i class="fas fa-check"></i> Approval 1
+                                                                </button>
+                                                            <?php else: ?>
+                                                                <span class="badge bg-secondary">
+                                                                    <i class="fas fa-clock"></i> Pending Approval 1
+                                                                </span>
+                                                            <?php endif; ?>
                                                         <?php endif; ?>
 
                                                         <?php if($row->approval_2 === true): ?>
@@ -251,17 +286,29 @@
                                                                 <?php endif; ?>
                                                             </div>
                                                         <?php elseif($row->approval_1 === true): ?>
-                                                            <button type="button"
-                                                                class="btn btn-success btn-sm approval-btn"
-                                                                data-question-id="<?php echo e($row->id); ?>"
-                                                                data-approval-type="2">
-                                                                <i class="fas fa-check-double"></i> Approval 2
-                                                            </button>
+                                                            <?php if($canApprove): ?>
+                                                                <button type="button"
+                                                                    class="btn btn-success btn-sm approval-btn"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
+                                                                    data-approval-type="2">
+                                                                    <i class="fas fa-check-double"></i> Approval 2
+                                                                </button>
+                                                            <?php else: ?>
+                                                                <span class="badge bg-secondary">
+                                                                    <i class="fas fa-clock"></i> Pending Approval 2
+                                                                </span>
+                                                            <?php endif; ?>
                                                         <?php else: ?>
-                                                            <button type="button" class="btn btn-secondary btn-sm"
-                                                                disabled title="Complete Approval 1 first">
-                                                                <i class="fas fa-check-double"></i> Approval 2
-                                                            </button>
+                                                            <?php if($canApprove): ?>
+                                                                <button type="button" class="btn btn-secondary btn-sm"
+                                                                    disabled title="Complete Approval 1 first">
+                                                                    <i class="fas fa-check-double"></i> Approval 2
+                                                                </button>
+                                                            <?php else: ?>
+                                                                <span class="badge bg-light text-muted">
+                                                                    <i class="fas fa-minus"></i> Awaiting Approval 1
+                                                                </span>
+                                                            <?php endif; ?>
                                                         <?php endif; ?>
                                                     </div>
                                                 </td>

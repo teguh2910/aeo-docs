@@ -15,17 +15,25 @@ class AeoQuestionController extends Controller
         $userDept = auth()->user()->dept ?? 'GENERAL';
 
         // Group questions by subcriteria for better display
-        // Filter questions to show only those from user's department
-        $rows = AeoQuestion::where('dept', $userDept)
-            ->with([
-                'documents' => function ($query) use ($userDept) {
+        // AEO and admin users can see all questions, others see only their department's questions
+        $query = AeoQuestion::query();
+
+        if (! in_array($userDept, ['AEO', 'admin'])) {
+            $query->where('dept', $userDept);
+        }
+
+        $rows = $query->with([
+            'documents' => function ($query) use ($userDept) {
+                // For AEO and admin, show all documents; for others, show only their dept documents
+                if (! in_array($userDept, ['AEO', 'admin'])) {
                     $query->where('dept', $userDept);
-                },
-                'documents.creator',
-                'documents.validator',
-                'approval1By',
-                'approval2By',
-            ])
+                }
+            },
+            'documents.creator',
+            'documents.validator',
+            'approval1By',
+            'approval2By',
+        ])
             ->orderBy('subcriteria')
             ->orderBy('id')
             ->get()
@@ -38,15 +46,19 @@ class AeoQuestionController extends Controller
     {
         $userDept = auth()->user()->dept ?? 'GENERAL';
 
-        // Check if user can access this question (question must be from their department)
-        if ($question->dept !== $userDept) {
+        // Check if user can access this question
+        // AEO and admin can access any question, others only their department's questions
+        if (! in_array($userDept, ['AEO', 'admin']) && $question->dept !== $userDept) {
             abort(403, 'You can only access questions from your department.');
         }
 
-        // Load documents filtered by user's department
+        // Load documents
         $question->load([
             'documents' => function ($query) use ($userDept) {
-                $query->where('dept', $userDept);
+                // For AEO and admin, show all documents; for others, show only their dept documents
+                if (! in_array($userDept, ['AEO', 'admin'])) {
+                    $query->where('dept', $userDept);
+                }
             },
             'documents.creator',
             'documents.validator',
@@ -274,10 +286,13 @@ class AeoQuestionController extends Controller
     {
         $userDept = auth()->user()->dept ?? 'GENERAL';
 
-        // Check if user can access this question (question must be from their department)
-        if ($question->dept !== $userDept) {
-            abort(403, 'You can only access questions from your department.');
+        // Check if user has permission to process approvals (only AEO and admin)
+        if (! in_array($userDept, ['AEO', 'admin'])) {
+            abort(403, 'Only AEO managers and administrators can process approvals.');
         }
+
+        // AEO and admin users can approve questions from any department
+        // No need to check department match for approval functionality
 
         $request->validate([
             'approval_type' => 'required|in:1,2',
