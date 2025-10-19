@@ -10,7 +10,7 @@ class AeoDocument extends Model
     protected $fillable = [
         'aeo_question_id', 'document_type', 'dept', 'nama_dokumen', 'no_sop_wi_std_form_other', 'files',
         'is_valid', 'validation_notes', 'validation_files', 'validated_at', 'validated_by',
-        'aeo_manager_valid', 'aeo_manager_notes', 'aeo_manager_validated_at', 'aeo_manager_validated_by',
+        'aeo_manager_valid', 'aeo_manager_notes', 'aeo_manager_validated_at', 'aeo_manager_validated_by', 'due_date',
         'status',
         'created_by', 'updated_by',
     ];
@@ -22,6 +22,7 @@ class AeoDocument extends Model
         'aeo_manager_valid' => 'boolean',
         'validated_at' => 'datetime',
         'aeo_manager_validated_at' => 'datetime',
+        'due_date' => 'date',
     ];
 
     protected static function boot()
@@ -34,6 +35,20 @@ class AeoDocument extends Model
                 $document->is_valid = false;
                 $document->validated_at = null;
                 $document->validated_by = null;
+                // Set status to draft if not already set
+                if (empty($document->status)) {
+                    $document->status = 'draft';
+                }
+            }
+
+            // Master documents are automatically validated but AEO Manager approval is manual
+            if ($document->document_type === 'master') {
+                $document->is_valid = true;
+                // AEO Manager validation remains manual - do not auto-set
+                // Set status to in_review if not already set (needs AEO Manager approval)
+                if (empty($document->status)) {
+                    $document->status = 'in_review';
+                }
             }
         });
 

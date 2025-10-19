@@ -41,15 +41,13 @@
                                 <thead class="table-dark">
                                     <tr>
                                         <th class="text-center">No</th>
-                                        <th>Kondisi dan Persyaratan</th>
-                                        <th>Pertanyaan</th>
+                                        <th class="text-center">Kondisi dan Persyaratan</th>
+                                        <th class="text-center">Pertanyaan</th>
                                         
-                                        <th>Jawaban</th>
-                                        <th class="text-center">Evident Validasi AEO</th>
-                                        <th class="text-center">Self Audit by Audity</th>
-                                        <th class="text-center">New Documents</th>
+                                        <th class="text-center">Jawaban</th>
+                                        <th class="text-center">Detail</th>
                                         <th class="text-center">Final Validasi by AEO Mgr</th>
-                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Approval</th>
                                         <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
@@ -111,712 +109,161 @@
                                                     <?php endif; ?>
                                                 </td>
 
-                                                <!-- COLUMN: MASTER DOCUMENT -->
-                                                <td class="bg-light">
-                                                    <!-- Add Document Button -->
-                                                    <div class="mb-3">
-                                                        <button class="btn btn-sm btn-success" type="button"
-                                                            data-bs-toggle="collapse"
-                                                            data-bs-target="#addDoc<?php echo e($row->id); ?>">
-                                                            <i class="fas fa-plus"></i> Add Master Document
-                                                        </button>
-                                                    </div>
-
-                                                    <!-- Add Document Form (Collapsed) -->
-                                                    <div class="collapse" id="addDoc<?php echo e($row->id); ?>">
-                                                        <div class="card card-body mb-3 bg-light">
-                                                            <form action="<?php echo e(route('aeo.documents.store')); ?>"
-                                                                method="POST" enctype="multipart/form-data">
-                                                                <?php echo csrf_field(); ?>
-                                                                <input type="hidden" name="aeo_question_id"
-                                                                    value="<?php echo e($row->id); ?>">
-                                                                <input type="hidden" name="document_type" value="master">
-
-                                                                <div class="mb-2">
-                                                                    <input type="text" name="nama_dokumen"
-                                                                        class="form-control form-control-sm"
-                                                                        placeholder="Master Document Name" required>
-                                                                </div>
-
-                                                                <div class="mb-2">
-                                                                    <label class="form-label form-label-sm text-muted">
-                                                                        <i class="fas fa-building"></i> Department
-                                                                        (Auto-filled)
-                                                                    </label>
-                                                                    <input type="text" name="dept"
-                                                                        class="form-control form-control-sm"
-                                                                        value="<?php echo e(auth()->user()->dept ?? 'GENERAL'); ?>"
-                                                                        readonly
-                                                                        style="background-color: #f8f9fa; cursor: not-allowed;">
-                                                                </div>
-
-                                                                <div class="mb-2">
-                                                                    <input type="text" name="no_sop_wi_std_form_other"
-                                                                        class="form-control form-control-sm"
-                                                                        placeholder="No SOP/WI/STD/Form/Other">
-                                                                </div>
-
-                                                                <div class="mb-2">
-                                                                    <input type="file" name="files[]"
-                                                                        class="form-control form-control-sm" multiple>
-                                                                </div>
-
-                                                                <div class="d-flex gap-1">
-                                                                    <button type="submit" class="btn btn-primary btn-sm">
-                                                                        <i class="fas fa-save"></i> Save
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-secondary btn-sm"
-                                                                        data-bs-toggle="collapse"
-                                                                        data-bs-target="#addDoc<?php echo e($row->id); ?>">
-                                                                        Cancel
-                                                                    </button>
-                                                                </div>
-                                                            </form>
+                                                <!-- COLUMN: DETAIL -->
+                                                <td class="bg-light text-center">
+                                                    <div class="py-3">
+                                                        <a href="<?php echo e(route('aeo.questions.documents', $row)); ?>"
+                                                            class="btn btn-primary btn-sm">
+                                                            <i class="fas fa-eye"></i> Detail
+                                                        </a>
+                                                        <div class="mt-2">
+                                                            <?php
+                                                                $totalDocs = $row->documents
+                                                                    ? $row->documents->count()
+                                                                    : 0;
+                                                                $masterDocs = $row->documents
+                                                                    ? $row->documents
+                                                                        ->where('document_type', 'master')
+                                                                        ->count()
+                                                                    : 0;
+                                                                $newDocs = $row->documents
+                                                                    ? $row->documents
+                                                                        ->where('document_type', 'new')
+                                                                        ->count()
+                                                                    : 0;
+                                                            ?>
+                                                            <small class="text-muted">
+                                                                <?php echo e($totalDocs); ?> documents<br>
+                                                                (<?php echo e($masterDocs); ?> master documents)
+                                                            </small>
                                                         </div>
-                                                    </div>
-
-                                                    <!-- Master Documents -->
-                                                    <?php
-                                                        $masterDocs = $row->documents
-                                                            ? $row->documents->where('document_type', 'master')
-                                                            : collect();
-                                                    ?>
-                                                    <?php if($masterDocs->count() > 0): ?>
-                                                        <?php $__currentLoopData = $masterDocs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $doc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                            <div class="border rounded p-2 mb-2 bg-white">
-                                                                <div
-                                                                    class="d-flex justify-content-between align-items-start">
-                                                                    <div class="flex-grow-1">
-                                                                        <!-- Document Name -->
-                                                                        <strong class="d-block text-primary">
-                                                                            <?php echo e($doc->nama_dokumen); ?>
-
-                                                                        </strong>
-
-                                                                        <?php if($doc->no_sop_wi_std_form_other): ?>
-                                                                            <small class="text-muted d-block">
-                                                                                No: <?php echo e($doc->no_sop_wi_std_form_other); ?>
-
-                                                                            </small>
-                                                                        <?php endif; ?>
-
-                                                                        <?php if($doc->dept): ?>
-                                                                            <small class="text-muted d-block">
-                                                                                <i class="fas fa-building"></i> Dept:
-                                                                                <?php echo e($doc->dept); ?>
-
-                                                                            </small>
-                                                                        <?php endif; ?>
-
-                                                                        <small class="text-muted d-block">
-                                                                            <i class="fas fa-clock"></i> Updated:
-                                                                            <?php echo e($doc->updated_at->format('d/m/Y H:i')); ?>
-
-                                                                        </small>
-
-                                                                        <?php if($doc->files && count($doc->files) > 0): ?>
-                                                                            <div class="mt-2">
-                                                                                <?php $__currentLoopData = $doc->files; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $f): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                                    <a href="<?php echo e(Storage::url($f)); ?>"
-                                                                                        target="_blank"
-                                                                                        class="btn btn-sm btn-outline-primary me-1 mb-1">
-                                                                                        <i class="fas fa-download"></i>
-                                                                                        File
-                                                                                    </a>
-                                                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                                            </div>
-                                                                        <?php endif; ?>
-                                                                    </div>
-
-                                                                    <!-- Document Actions -->
-                                                                    <div class="ms-2">
-                                                                        <div class="btn-group-vertical" role="group">
-                                                                            <a href="<?php echo e(route('aeo.documents.edit', $doc)); ?>"
-                                                                                class="btn btn-sm btn-warning"
-                                                                                title="Edit Document">
-                                                                                <i class="fas fa-edit"></i>
-                                                                            </a>
-                                                                            <form
-                                                                                action="<?php echo e(route('aeo.documents.destroy', $doc)); ?>"
-                                                                                method="POST" class="d-inline">
-                                                                                <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
-                                                                                <button type="submit"
-                                                                                    class="btn btn-sm btn-danger"
-                                                                                    onclick="return confirm('Delete this master document?')"
-                                                                                    title="Delete Document">
-                                                                                    <i class="fas fa-trash"></i>
-                                                                                </button>
-                                                                            </form>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                    <?php else: ?>
-                                                        <div class="text-muted text-center py-3">
-                                                            <i class="fas fa-inbox"></i><br>
-                                                            <small>No master documents yet</small>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </td>
-
-                                                <!-- COLUMN: VALIDASI DOKUMEN -->
-                                                <td class="bg-light">
-                                                    <br>
-                                                    <br>
-                                                    <?php
-                                                        $masterDocs = $row->documents
-                                                            ? $row->documents->where('document_type', 'master')
-                                                            : collect();
-                                                    ?>
-                                                    <?php if($masterDocs->count() > 0): ?>
-                                                        <?php $__currentLoopData = $masterDocs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $doc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                            <div class="border rounded p-2 mb-2 bg-white">
-                                                                <div
-                                                                    class="d-flex justify-content-between align-items-start">
-                                                                    <div class="flex-grow-1">
-                                                                        <!-- Document Name -->
-                                                                        <strong class="d-block text-primary">
-                                                                            <?php echo e($doc->nama_dokumen); ?>
-
-                                                                        </strong>
-
-                                                                        <?php if($doc->no_sop_wi_std_form_other): ?>
-                                                                            <small class="text-muted d-block">
-                                                                                No: <?php echo e($doc->no_sop_wi_std_form_other); ?>
-
-                                                                            </small>
-                                                                        <?php endif; ?>
-
-                                                                        <?php if($doc->dept): ?>
-                                                                            <small class="text-muted d-block">
-                                                                                <i class="fas fa-building"></i> Dept:
-                                                                                <?php echo e($doc->dept); ?>
-
-                                                                            </small>
-                                                                        <?php endif; ?>
-
-                                                                        <small class="text-muted d-block">
-                                                                            <i class="fas fa-clock"></i> Updated:
-                                                                            <?php echo e($doc->updated_at->format('d/m/Y H:i')); ?>
-
-                                                                        </small>
-
-                                                                        <!-- Status Badge -->
-                                                                        <div class="mt-2 mb-2">
-                                                                            <span
-                                                                                class="badge <?php echo e($doc->is_valid ? 'bg-success' : 'bg-danger'); ?>">
-                                                                                <i
-                                                                                    class="fas <?php echo e($doc->is_valid ? 'fa-check-circle' : 'fa-times-circle'); ?>"></i>
-                                                                                <?php echo e($doc->is_valid ? 'Valid' : 'Invalid'); ?>
-
-                                                                            </span>
-                                                                        </div>
-
-                                                                        <!-- Validation Question -->
-                                                                        <div class="mb-2">
-                                                                        </div>
-
-                                                                        <?php if(!$doc->is_valid && $doc->validation_notes): ?>
-                                                                            <div class="alert alert-warning py-1 mt-2">
-                                                                                <small><strong>Reason:</strong>
-                                                                                    <?php echo e($doc->validation_notes); ?></small>
-                                                                            </div>
-                                                                        <?php endif; ?>
-
-                                                                        <?php if($doc->validation_files && count($doc->validation_files) > 0): ?>
-                                                                            <div class="mt-2">
-                                                                                <small class="text-muted d-block"><strong>Validation
-                                                                                        Files:</strong></small>
-                                                                                <?php $__currentLoopData = $doc->validation_files; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $vf): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                                    <a href="<?php echo e(Storage::url($vf)); ?>"
-                                                                                        target="_blank"
-                                                                                        class="btn btn-xs btn-outline-danger me-1 mb-1">
-                                                                                        <i class="fas fa-file"></i>
-                                                                                        File
-                                                                                    </a>
-                                                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                                            </div>
-                                                                        <?php endif; ?>
-                                                                    </div>
-
-                                                                    <!-- Validation Actions -->
-                                                                    <div class="ms-2">
-                                                                        <div class="btn-group-vertical" role="group">
-                                                                            <!-- Toggle Switch -->
-                                                                            <div class="form-check form-switch mb-2">
-                                                                                <input
-                                                                                    class="form-check-input validation-toggle"
-                                                                                    type="checkbox"
-                                                                                    id="validationToggle<?php echo e($doc->id); ?>"
-                                                                                    <?php echo e($doc->is_valid ? 'checked' : ''); ?>
-
-                                                                                    data-doc-id="<?php echo e($doc->id); ?>"
-                                                                                    data-route="<?php echo e(route('aeo.documents.toggle-validation', $doc)); ?>">
-                                                                                <label class="form-check-label fw-bold"
-                                                                                    for="validationToggle<?php echo e($doc->id); ?>">
-                                                                                    <span
-                                                                                        class="valid-text <?php echo e($doc->is_valid ? 'text-success' : 'text-muted'); ?>">
-                                                                                        <i class="fas fa-check"></i> Valid
-                                                                                    </span>
-                                                                                </label>
-                                                                            </div>
-
-                                                                            <!-- Add New Document Button -->
-                                                                            <button type="button"
-                                                                                class="btn btn-outline-primary btn-sm mb-1"
-                                                                                data-bs-toggle="collapse"
-                                                                                data-bs-target="#newDocForm<?php echo e($doc->id); ?>"
-                                                                                title="Add New Document">
-                                                                                <i class="fas fa-plus"></i> New Doc
-                                                                            </button>
-
-                                                                            <!-- Edit Master Document Button -->
-                                                                            <button type="button"
-                                                                                class="btn btn-outline-secondary btn-sm"
-                                                                                data-bs-toggle="collapse"
-                                                                                data-bs-target="#invalidForm<?php echo e($doc->id); ?>"
-                                                                                title="Edit Master Document">
-                                                                                <i class="fas fa-edit"></i> Edit
-                                                                            </button>
-                                                                        </div>
-
-                                                                        <!-- Edit Master Document Form -->
-                                                                        <div class="collapse mt-2"
-                                                                            id="invalidForm<?php echo e($doc->id); ?>">
-                                                                            <form
-                                                                                action="<?php echo e(route('aeo.documents.toggle-validation', $doc)); ?>"
-                                                                                method="POST" class="validation-form"
-                                                                                enctype="multipart/form-data">
-                                                                                <?php echo csrf_field(); ?>
-                                                                                <input type="hidden" name="is_valid"
-                                                                                    value="0">
-
-                                                                                <!-- Document Information Edit -->
-                                                                                <div class="alert alert-info py-2 mb-2">
-                                                                                    <small><i
-                                                                                            class="fas fa-info-circle"></i>
-                                                                                        <strong>Edit Master
-                                                                                            Document:</strong>
-                                                                                        You can modify the master document
-                                                                                        details
-                                                                                        below before marking as
-                                                                                        invalid.</small>
-                                                                                </div>
-
-                                                                                <div class="mb-2">
-                                                                                    <label
-                                                                                        class="form-label form-label-sm"><strong>Document
-                                                                                            Name:</strong></label>
-                                                                                    <input type="text"
-                                                                                        name="nama_dokumen"
-                                                                                        class="form-control form-control-sm"
-                                                                                        value="<?php echo e($doc->nama_dokumen); ?>"
-                                                                                        placeholder="Enter document name"
-                                                                                        required>
-                                                                                </div>
-
-                                                                                <div class="mb-2">
-                                                                                    <label
-                                                                                        class="form-label form-label-sm"><strong>Document
-                                                                                            No:</strong></label>
-                                                                                    <input type="text"
-                                                                                        name="no_sop_wi_std_form_other"
-                                                                                        class="form-control form-control-sm"
-                                                                                        value="<?php echo e($doc->no_sop_wi_std_form_other); ?>"
-                                                                                        placeholder="Enter document number (optional)">
-                                                                                </div>
-
-                                                                                <!-- File Upload -->
-                                                                                <div class="mb-2">
-                                                                                    <label
-                                                                                        class="form-label form-label-sm"><strong>Upload
-                                                                                            Additional
-                                                                                            Files:</strong></label>
-                                                                                    <input type="file"
-                                                                                        name="validation_files[]"
-                                                                                        class="form-control form-control-sm"
-                                                                                        multiple
-                                                                                        accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif">
-                                                                                    <small class="text-muted">Optional:
-                                                                                        Upload
-                                                                                        files related to validation
-                                                                                        issues</small>
-                                                                                </div>
-
-                                                                                <!-- Validation Notes -->
-                                                                                <div class="mb-2">
-                                                                                    <label
-                                                                                        class="form-label form-label-sm"><strong>Reason
-                                                                                            for Invalid:</strong></label>
-                                                                                    <textarea name="validation_notes" class="form-control form-control-sm" rows="3"
-                                                                                        placeholder="Please provide reason for marking this document as invalid..."></textarea>
-                                                                                </div>
-
-                                                                                <div class="d-flex gap-1">
-                                                                                    <button type="submit"
-                                                                                        class="btn btn-sm btn-danger">
-                                                                                        <i class="fas fa-save"></i> Update
-                                                                                        &
-                                                                                        Mark
-                                                                                        Invalid
-                                                                                    </button>
-                                                                                    <button type="button"
-                                                                                        class="btn btn-sm btn-secondary"
-                                                                                        data-bs-toggle="collapse"
-                                                                                        data-bs-target="#invalidForm<?php echo e($doc->id); ?>">
-                                                                                        Cancel
-                                                                                    </button>
-                                                                                </div>
-                                                                            </form>
-                                                                        </div>
-
-                                                                        <!-- Add New Document Form -->
-                                                                        <div class="collapse mt-2"
-                                                                            id="newDocForm<?php echo e($doc->id); ?>">
-
-                                                                            <form
-                                                                                action="<?php echo e(route('aeo.documents.store')); ?>"
-                                                                                method="POST"
-                                                                                class="validation-form bg-success bg-opacity-10"
-                                                                                enctype="multipart/form-data">
-                                                                                <?php echo csrf_field(); ?>
-                                                                                <input type="hidden"
-                                                                                    name="aeo_question_id"
-                                                                                    value="<?php echo e($row->id); ?>">
-                                                                                <input type="hidden" name="document_type"
-                                                                                    value="new">
-                                                                                <input type="hidden" name="is_valid"
-                                                                                    value="0">
-
-                                                                                <!-- New Document Information -->
-                                                                                <div class="alert alert-success py-2 mb-2">
-                                                                                    <small><i
-                                                                                            class="fas fa-plus-circle"></i>
-                                                                                        <strong>Add New Document:</strong>
-                                                                                        Create a new document with
-                                                                                        validation
-                                                                                        files
-                                                                                        and mark as invalid.</small>
-                                                                                </div>
-
-                                                                                <div class="mb-2">
-                                                                                    <label
-                                                                                        class="form-label form-label-sm"><strong>New
-                                                                                            Document
-                                                                                            Name:</strong></label>
-                                                                                    <input type="text"
-                                                                                        name="nama_dokumen"
-                                                                                        class="form-control form-control-sm"
-                                                                                        placeholder="Enter new document name"
-                                                                                        required>
-                                                                                </div>
-
-                                                                                <div class="mb-2">
-                                                                                    <label
-                                                                                        class="form-label form-label-sm text-muted">
-                                                                                        <i class="fas fa-building"></i>
-                                                                                        Department (Auto-filled)
-                                                                                    </label>
-                                                                                    <input type="text" name="dept"
-                                                                                        class="form-control form-control-sm"
-                                                                                        value="<?php echo e(auth()->user()->dept ?? 'GENERAL'); ?>"
-                                                                                        readonly
-                                                                                        style="background-color: #f8f9fa; cursor: not-allowed;">
-                                                                                </div>
-
-                                                                                <div class="mb-2">
-                                                                                    <label
-                                                                                        class="form-label form-label-sm"><strong>Document
-                                                                                            No:</strong></label>
-                                                                                    <input type="text"
-                                                                                        name="no_sop_wi_std_form_other"
-                                                                                        class="form-control form-control-sm"
-                                                                                        placeholder="Enter document number (optional)">
-                                                                                </div>
-
-                                                                                <!-- Document Files -->
-                                                                                <div class="mb-2">
-                                                                                    <label
-                                                                                        class="form-label form-label-sm"><strong>Document
-                                                                                            Files:</strong></label>
-                                                                                    <input type="file" name="files[]"
-                                                                                        class="form-control form-control-sm"
-                                                                                        multiple
-                                                                                        accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif">
-                                                                                    <small class="text-muted">Upload main
-                                                                                        document
-                                                                                        files</small>
-                                                                                </div>
-
-                                                                                <!-- Validation Notes -->
-                                                                                <div class="mb-2">
-                                                                                    <label
-                                                                                        class="form-label form-label-sm"><strong>Notes/Reason:</strong></label>
-                                                                                    <textarea name="validation_notes" class="form-control form-control-sm" rows="3"
-                                                                                        placeholder="Provide notes or reason for this new document..."></textarea>
-                                                                                </div>
-
-                                                                                <div class="d-flex gap-1">
-                                                                                    <button type="submit"
-                                                                                        class="btn btn-sm btn-success">
-                                                                                        <i class="fas fa-save"></i> Create
-                                                                                        New
-                                                                                        Document
-                                                                                    </button>
-                                                                                    <button type="button"
-                                                                                        class="btn btn-sm btn-secondary"
-                                                                                        data-bs-toggle="collapse"
-                                                                                        data-bs-target="#newDocForm<?php echo e($doc->id); ?>">
-                                                                                        Cancel
-                                                                                    </button>
-                                                                                </div>
-                                                                            </form>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                    <?php else: ?>
-                                                        <div class="text-muted text-center py-3">
-                                                            <i class="fas fa-inbox"></i><br>
-                                                            <small>No master documents yet</small>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </td>
-
-                                                <!-- COLUMN: NEW DOCUMENTS -->
-                                                <td class="bg-light">
-                                                    <br><br>
-                                                    <?php
-                                                        $newDocs = $row->documents
-                                                            ? $row->documents->where('document_type', 'new')
-                                                            : collect();
-                                                    ?>
-                                                    <?php if($newDocs->count() > 0): ?>
-                                                        <?php $__currentLoopData = $newDocs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $newDoc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                            <div class="border rounded p-2 mb-2 bg-white">
-                                                                <div
-                                                                    class="d-flex justify-content-between align-items-start">
-                                                                    <div class="flex-grow-1">
-                                                                        <!-- Document Name -->
-                                                                        <strong class="d-block text-success">
-                                                                            <?php echo e($newDoc->nama_dokumen); ?>
-
-                                                                        </strong>
-
-                                                                        <?php if($newDoc->no_sop_wi_std_form_other): ?>
-                                                                            <small class="text-muted d-block">
-                                                                                No: <?php echo e($newDoc->no_sop_wi_std_form_other); ?>
-
-                                                                            </small>
-                                                                        <?php endif; ?>
-
-                                                                        <?php if($newDoc->dept): ?>
-                                                                            <small class="text-muted d-block">
-                                                                                <i class="fas fa-building"></i> Dept:
-                                                                                <?php echo e($newDoc->dept); ?>
-
-                                                                            </small>
-                                                                        <?php endif; ?>
-
-                                                                        <small class="text-muted d-block">
-                                                                            <i class="fas fa-clock"></i> Created:
-                                                                            <?php echo e($newDoc->created_at->format('d/m/Y H:i')); ?>
-
-                                                                        </small>
-
-                                                                        <!-- Status Badge -->
-                                                                        <div class="mt-2 mb-2">
-                                                                            <span class="badge bg-warning">
-                                                                                <i class="fas fa-exclamation-triangle"></i>
-                                                                                New Document
-                                                                            </span>
-                                                                        </div>
-
-                                                                        <?php if($newDoc->validation_notes): ?>
-                                                                            <div class="alert alert-info py-1 mt-2">
-                                                                                <small><strong>Notes:</strong>
-                                                                                    <?php echo e($newDoc->validation_notes); ?></small>
-                                                                            </div>
-                                                                        <?php endif; ?>
-
-                                                                        <!-- Document Files -->
-                                                                        <?php if($newDoc->files && count($newDoc->files) > 0): ?>
-                                                                            <div class="mt-2">
-                                                                                <small class="text-muted d-block"><strong>Document
-                                                                                        Files:</strong></small>
-                                                                                <?php $__currentLoopData = $newDoc->files; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $f): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                                    <a href="<?php echo e(Storage::url($f)); ?>"
-                                                                                        target="_blank"
-                                                                                        class="btn btn-xs btn-outline-primary me-1 mb-1">
-                                                                                        <i class="fas fa-download"></i>
-                                                                                        File
-                                                                                    </a>
-                                                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                                            </div>
-                                                                        <?php endif; ?>
-
-                                                                        <!-- Validation Files -->
-                                                                        <?php if($newDoc->validation_files && count($newDoc->validation_files) > 0): ?>
-                                                                            <div class="mt-2">
-                                                                                <small class="text-muted d-block"><strong>Validation
-                                                                                        Files:</strong></small>
-                                                                                <?php $__currentLoopData = $newDoc->validation_files; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $vf): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                                    <a href="<?php echo e(Storage::url($vf)); ?>"
-                                                                                        target="_blank"
-                                                                                        class="btn btn-xs btn-outline-success me-1 mb-1">
-                                                                                        <i class="fas fa-file"></i>
-                                                                                        File
-                                                                                    </a>
-                                                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                                            </div>
-                                                                        <?php endif; ?>
-                                                                    </div>
-
-                                                                    <!-- Document Actions -->
-                                                                    <div class="ms-2">
-                                                                        <div class="btn-group-vertical" role="group">
-                                                                            <a href="<?php echo e(route('aeo.documents.edit', $newDoc)); ?>"
-                                                                                class="btn btn-sm btn-warning"
-                                                                                title="Edit New Document">
-                                                                                <i class="fas fa-edit"></i>
-                                                                            </a>
-                                                                            <form
-                                                                                action="<?php echo e(route('aeo.documents.destroy', $newDoc)); ?>"
-                                                                                method="POST" class="d-inline">
-                                                                                <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
-                                                                                <button type="submit"
-                                                                                    class="btn btn-sm btn-danger"
-                                                                                    onclick="return confirm('Delete this new document?')"
-                                                                                    title="Delete New Document">
-                                                                                    <i class="fas fa-trash"></i>
-                                                                                </button>
-                                                                            </form>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                    <?php else: ?>
-                                                        <div class="text-muted text-center py-3">
-                                                            <i class="fas fa-inbox"></i><br>
-                                                            <small>No new documents yet</small>
-                                                        </div>
-                                                    <?php endif; ?>
                                                 </td>
 
                                                 <!-- COLUMN: FINAL VALIDASI BY AEO MGR -->
-                                                <td class="bg-light">
+                                                <td class="text-center">
                                                     <?php
-                                                        $allDocs = $row->documents ?? collect();
+                                                        $hasValidatedDocs =
+                                                            $row->documents
+                                                                ->where('aeo_manager_validated_at', '!=', null)
+                                                                ->count() > 0;
+                                                        $allValid = $row->documents->every(
+                                                            fn($doc) => $doc->aeo_manager_valid === true,
+                                                        );
+                                                        $hasInvalid = $row->documents->some(
+                                                            fn($doc) => $doc->aeo_manager_valid === false,
+                                                        );
                                                     ?>
-                                                    <?php if($allDocs->count() > 0): ?>
-                                                        <?php $__currentLoopData = $allDocs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $doc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                            <div class="border rounded p-2 mb-2 bg-white">
-                                                                <div
-                                                                    class="d-flex justify-content-between align-items-start">
-                                                                    <div class="flex-grow-1">
-                                                                        <strong class="d-block text-primary">
-                                                                            <?php echo e(Str::limit($doc->nama_dokumen, 25)); ?>
 
-                                                                        </strong>
-
-                                                                        <!-- AEO Manager Validation Status -->
-                                                                        <div class="mt-2 mb-2">
-                                                                            <?php if($doc->aeo_manager_valid === true): ?>
-                                                                                <span class="badge bg-success">
-                                                                                    <i class="fas fa-check-circle"></i>
-                                                                                    Valid
-                                                                                </span>
-                                                                            <?php elseif($doc->aeo_manager_valid === false): ?>
-                                                                                <span class="badge bg-danger">
-                                                                                    <i class="fas fa-times-circle"></i>
-                                                                                    Invalid
-                                                                                </span>
-                                                                            <?php else: ?>
-                                                                                <span class="badge bg-secondary">
-                                                                                    <i class="fas fa-clock"></i> Pending
-                                                                                </span>
-                                                                            <?php endif; ?>
-                                                                        </div>
-
-                                                                        <?php if($doc->aeo_manager_notes): ?>
-                                                                            <div class="alert alert-info py-1 mt-2">
-                                                                                <small><strong>Notes:</strong>
-                                                                                    <?php echo e(Str::limit($doc->aeo_manager_notes, 50)); ?></small>
-                                                                            </div>
-                                                                        <?php endif; ?>
-                                                                    </div>
-
-                                                                    <!-- AEO Manager Toggle -->
-                                                                    <div class="ms-2">
-                                                                        <div class="form-check form-switch">
-                                                                            <input
-                                                                                class="form-check-input aeo-manager-toggle"
-                                                                                type="checkbox"
-                                                                                id="aeoManagerToggle<?php echo e($doc->id); ?>"
-                                                                                <?php echo e($doc->aeo_manager_valid ? 'checked' : ''); ?>
-
-                                                                                data-doc-id="<?php echo e($doc->id); ?>"
-                                                                                data-route="<?php echo e(route('aeo.documents.aeo-manager-toggle', $doc)); ?>">
-                                                                            <label class="form-check-label fw-bold"
-                                                                                for="aeoManagerToggle<?php echo e($doc->id); ?>">
-                                                                                <span
-                                                                                    class="aeo-valid-text <?php echo e($doc->aeo_manager_valid ? 'text-success' : 'text-muted'); ?>">
-                                                                                    <i class="fas fa-check"></i>
-                                                                                </span>
-                                                                            </label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php if($hasValidatedDocs): ?>
+                                                        <?php if($allValid): ?>
+                                                            <span class="badge bg-success">Sesuai</span>
+                                                            <br>
+                                                            <button type="button"
+                                                                class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
+                                                                data-question-id="<?php echo e($row->id); ?>"
+                                                                title="Undo All AEO Manager Validations">
+                                                                <i class="fas fa-undo"></i> Undo All
+                                                            </button>
+                                                        <?php elseif($hasInvalid): ?>
+                                                            <span class="badge bg-danger">Tidak Sesuai</span>
+                                                            <br>
+                                                            <button type="button"
+                                                                class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
+                                                                data-question-id="<?php echo e($row->id); ?>"
+                                                                title="Undo All AEO Manager Validations">
+                                                                <i class="fas fa-undo"></i> Undo All
+                                                            </button>
+                                                            <?php if($row->documents->where('aeo_manager_valid', false)->first()?->due_date): ?>
+                                                                <br><small class="text-muted">Due:
+                                                                    <?php echo e($row->documents->where('aeo_manager_valid', false)->first()->due_date); ?></small>
+                                                            <?php endif; ?>
+                                                        <?php else: ?>
+                                                            <span class="badge bg-warning">Partial</span>
+                                                            <br>
+                                                            <button type="button"
+                                                                class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
+                                                                data-question-id="<?php echo e($row->id); ?>"
+                                                                title="Undo All AEO Manager Validations">
+                                                                <i class="fas fa-undo"></i> Undo All
+                                                            </button>
+                                                        <?php endif; ?>
                                                     <?php else: ?>
-                                                        <div class="text-muted text-center py-3">
-                                                            <i class="fas fa-inbox"></i><br>
-                                                            <small>No documents</small>
+                                                        <div class="btn-group-vertical gap-1">
+                                                            <button type="button"
+                                                                class="btn btn-success btn-sm aeo-validation-btn"
+                                                                data-question-id="<?php echo e($row->id); ?>"
+                                                                data-status="sesuai">
+                                                                <i class="fas fa-check"></i> Sesuai
+                                                            </button>
+                                                            <button type="button"
+                                                                class="btn btn-danger btn-sm aeo-validation-btn"
+                                                                data-question-id="<?php echo e($row->id); ?>"
+                                                                data-status="tidak_sesuai" data-bs-toggle="modal"
+                                                                data-bs-target="#aeoValidationModal">
+                                                                <i class="fas fa-times"></i> Tidak Sesuai
+                                                            </button>
                                                         </div>
                                                     <?php endif; ?>
                                                 </td>
 
-                                                <!-- COLUMN: STATUS -->
-                                                <td class="bg-light">
-                                                    <?php if($allDocs->count() > 0): ?>
-                                                        <?php $__currentLoopData = $allDocs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $doc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                            <div class="border rounded p-2 mb-2 bg-white">
-                                                                <div class="text-center">
-                                                                    <?php
-                                                                        $statusColors = [
-                                                                            'draft' => 'bg-secondary',
-                                                                            'in_review' => 'bg-primary',
-                                                                            'approved' => 'bg-success',
-                                                                            'rejected' => 'bg-danger',
-                                                                            'pending' => 'bg-warning',
-                                                                        ];
-                                                                        $statusIcons = [
-                                                                            'draft' => 'fa-edit',
-                                                                            'in_review' => 'fa-eye',
-                                                                            'approved' => 'fa-check',
-                                                                            'rejected' => 'fa-times',
-                                                                            'pending' => 'fa-clock',
-                                                                        ];
-                                                                    ?>
-                                                                    <span
-                                                                        class="badge <?php echo e($statusColors[$doc->status] ?? 'bg-secondary'); ?>">
-                                                                        <i
-                                                                            class="fas <?php echo e($statusIcons[$doc->status] ?? 'fa-question'); ?>"></i>
-                                                                        <?php echo e(ucfirst($doc->status)); ?>
 
-                                                                    </span>
-                                                                </div>
+
+                                                <!-- COLUMN: APPROVAL -->
+                                                <td class="text-center">
+                                                    <div class="btn-group-vertical gap-1">
+                                                        <?php if($row->approval_1 === true): ?>
+                                                            <div class="mb-2">
+                                                                <span class="badge bg-success">
+                                                                    <i class="fas fa-check"></i> Approval 1 ✓
+                                                                </span>
+                                                                <br>
+                                                                <small class="text-muted">
+                                                                    <?php echo e($row->approval_1_at ? $row->approval_1_at->format('d/m/Y H:i') : ''); ?>
+
+                                                                </small>
+                                                                <?php if($row->approval1By): ?>
+                                                                    <br><small class="text-muted">by
+                                                                        <?php echo e($row->approval1By->name); ?></small>
+                                                                <?php endif; ?>
                                                             </div>
-                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                    <?php else: ?>
-                                                        <div class="text-muted text-center py-3">
-                                                            <small>-</small>
-                                                        </div>
-                                                    <?php endif; ?>
+                                                        <?php else: ?>
+                                                            <button type="button"
+                                                                class="btn btn-primary btn-sm approval-btn"
+                                                                data-question-id="<?php echo e($row->id); ?>"
+                                                                data-approval-type="1">
+                                                                <i class="fas fa-check"></i> Approval 1
+                                                            </button>
+                                                        <?php endif; ?>
+
+                                                        <?php if($row->approval_2 === true): ?>
+                                                            <div class="mb-2">
+                                                                <span class="badge bg-success">
+                                                                    <i class="fas fa-check-double"></i> Approval 2 ✓
+                                                                </span>
+                                                                <br>
+                                                                <small class="text-muted">
+                                                                    <?php echo e($row->approval_2_at ? $row->approval_2_at->format('d/m/Y H:i') : ''); ?>
+
+                                                                </small>
+                                                                <?php if($row->approval2By): ?>
+                                                                    <br><small class="text-muted">by
+                                                                        <?php echo e($row->approval2By->name); ?></small>
+                                                                <?php endif; ?>
+                                                            </div>
+                                                        <?php elseif($row->approval_1 === true): ?>
+                                                            <button type="button"
+                                                                class="btn btn-success btn-sm approval-btn"
+                                                                data-question-id="<?php echo e($row->id); ?>"
+                                                                data-approval-type="2">
+                                                                <i class="fas fa-check-double"></i> Approval 2
+                                                            </button>
+                                                        <?php else: ?>
+                                                            <button type="button" class="btn btn-secondary btn-sm"
+                                                                disabled title="Complete Approval 1 first">
+                                                                <i class="fas fa-check-double"></i> Approval 2
+                                                            </button>
+                                                        <?php endif; ?>
+                                                    </div>
                                                 </td>
 
                                                 <!-- COLUMN: AKSI -->
@@ -841,7 +288,7 @@
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <tr>
-                                            <td colspan="13" class="text-center py-4">
+                                            <td colspan="8" class="text-center py-4">
                                                 <div class="text-muted">
                                                     <i class="fas fa-inbox fa-2x mb-2"></i><br>
                                                     No questions found. <a href="<?php echo e(route('aeo.questions.create')); ?>">Add
@@ -855,6 +302,99 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AEO Manager Validation Modal -->
+    <div class="modal fade" id="aeoValidationModal" tabindex="-1" aria-labelledby="aeoValidationModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="aeoValidationModalLabel">
+                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                        Validasi AEO Manager - Tidak Sesuai
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="aeoValidationForm">
+                    <?php echo csrf_field(); ?>
+                    <div class="modal-body">
+                        <input type="hidden" id="questionId" name="question_id">
+                        <input type="hidden" name="validation_status" value="tidak_sesuai">
+
+                        <div class="mb-3">
+                            <label for="aeoManagerNotes" class="form-label">
+                                <i class="fas fa-sticky-note"></i> Catatan <span class="text-danger">*</span>
+                            </label>
+                            <textarea class="form-control" id="aeoManagerNotes" name="aeo_manager_notes" rows="4"
+                                placeholder="Masukkan catatan mengapa dokumen tidak sesuai..." required></textarea>
+                            <div class="form-text">Jelaskan alasan mengapa dokumen dinyatakan tidak sesuai.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="dueDate" class="form-label">
+                                <i class="fas fa-calendar-alt"></i> Tanggal Jatuh Tempo <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" class="form-control" id="dueDate" name="due_date"
+                                min="<?php echo e(date('Y-m-d', strtotime('+1 day'))); ?>" required>
+                            <div class="form-text">Tentukan batas waktu untuk perbaikan dokumen.</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i> Batal
+                        </button>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-save"></i> Simpan Validasi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Approval Modal -->
+    <div class="modal fade" id="approvalModal" tabindex="-1" aria-labelledby="approvalModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="approvalModalLabel">
+                        <i class="fas fa-check-circle text-success"></i>
+                        Process Approval
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="approvalForm">
+                    <?php echo csrf_field(); ?>
+                    <div class="modal-body">
+                        <input type="hidden" id="approvalQuestionId" name="question_id">
+                        <input type="hidden" id="approvalType" name="approval_type">
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <span id="approvalMessage">You are about to process this approval.</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="approvalNotes" class="form-label">
+                                <i class="fas fa-sticky-note"></i> Notes (Optional)
+                            </label>
+                            <textarea class="form-control" id="approvalNotes" name="notes" rows="3"
+                                placeholder="Add any notes for this approval..."></textarea>
+                            <div class="form-text">You can add optional notes to document the approval decision.</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-success" id="approvalSubmitBtn">
+                            <i class="fas fa-check"></i> Approve
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -971,6 +511,39 @@
         .toast {
             min-width: 300px;
         }
+
+        /* AEO Manager Validation Buttons */
+        .aeo-validation-btn {
+            font-size: 0.875rem;
+            margin-bottom: 2px;
+        }
+
+        .aeo-validation-btn:disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Modal styling improvements */
+        .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .modal-footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        /* Form validation styling */
+        .was-validated .form-control:invalid,
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            padding-right: calc(1.5em + 0.75rem);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 3.6.7.8L6.6 6l-.1 1.4'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        }
     </style>
 <?php $__env->stopPush(); ?>
 
@@ -997,6 +570,14 @@
                 "order": [
                     [0, 'asc']
                 ], // Sort by No column
+
+                // Column definitions
+                "columnDefs": [{
+                    "targets": 0, // No column
+                    "width": "60px",
+                    "className": "text-center",
+                    "orderable": true
+                }],
 
                 // Language customization
                 "language": {
@@ -1025,7 +606,7 @@
                         className: 'btn btn-secondary btn-sm',
                         text: '<i class="fas fa-copy"></i> Copy',
                         exportOptions: {
-                            columns: [1, 2, 3, 4] // Export only specific columns
+                            columns: [0, 1, 2, 3, 4, 5, 6] // Export all columns except Actions
                         }
                     },
                     {
@@ -1033,7 +614,7 @@
                         className: 'btn btn-success btn-sm',
                         text: '<i class="fas fa-file-excel"></i> Excel',
                         exportOptions: {
-                            columns: [1, 2, 3, 4]
+                            columns: [0, 1, 2, 3, 4, 5, 6]
                         }
                     },
                     {
@@ -1041,7 +622,7 @@
                         className: 'btn btn-danger btn-sm',
                         text: '<i class="fas fa-file-pdf"></i> PDF',
                         exportOptions: {
-                            columns: [1, 2, 3, 4]
+                            columns: [0, 1, 2, 3, 4, 5, 6]
                         },
                         orientation: 'landscape',
                         pageSize: 'A4'
@@ -1051,10 +632,144 @@
                         className: 'btn btn-info btn-sm',
                         text: '<i class="fas fa-print"></i> Print',
                         exportOptions: {
-                            columns: [1, 2, 3, 4]
+                            columns: [0, 1, 2, 3]
                         }
                     }
                 ]
+            });
+
+            // Handle AEO Manager validation buttons
+            $('.aeo-validation-btn').on('click', function() {
+                const button = $(this);
+                const questionId = button.data('question-id');
+                const status = button.data('status');
+
+                if (status === 'sesuai') {
+                    // Handle "Sesuai" directly
+                    handleAeoValidation(questionId, 'sesuai', null, null);
+                } else if (status === 'tidak_sesuai') {
+                    // Set the question ID in the modal
+                    $('#questionId').val(questionId);
+                    // Modal will be shown by Bootstrap automatically due to data-bs-toggle
+                }
+            });
+
+            // Handle AEO Validation Form submission
+            $('#aeoValidationForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const form = $(this);
+                const questionId = $('#questionId').val();
+                const notes = $('#aeoManagerNotes').val().trim();
+                const dueDate = $('#dueDate').val();
+
+                if (!notes) {
+                    showToast('Catatan harus diisi', 'error');
+                    return;
+                }
+
+                if (!dueDate) {
+                    showToast('Tanggal jatuh tempo harus diisi', 'error');
+                    return;
+                }
+
+                handleAeoValidation(questionId, 'tidak_sesuai', notes, dueDate);
+            });
+
+            // Function to handle AEO validation
+            function handleAeoValidation(questionId, status, notes, dueDate) {
+                const route = `<?php echo e(route('aeo.questions.aeo-manager-validation', ':id')); ?>`.replace(':id',
+                    questionId);
+
+                // Create form data
+                const formData = new FormData();
+                formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+                formData.append('validation_status', status);
+                if (notes) formData.append('aeo_manager_notes', notes);
+                if (dueDate) formData.append('due_date', dueDate);
+
+                // Show loading state
+                if (status === 'sesuai') {
+                    $(`.aeo-validation-btn[data-question-id="${questionId}"]`).prop('disabled', true);
+                } else {
+                    $('#aeoValidationForm button[type="submit"]').prop('disabled', true).html(
+                        '<i class="fas fa-spinner fa-spin"></i> Menyimpan...');
+                }
+
+                // Send AJAX request
+                fetch(route, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            if (status === 'sesuai') {
+                                showToast('Dokumen berhasil divalidasi sebagai Sesuai', 'success');
+                            } else {
+                                showToast(
+                                    'Dokumen berhasil divalidasi sebagai Tidak Sesuai dengan catatan dan tenggat waktu',
+                                    'success');
+                                // Hide modal
+                                $('#aeoValidationModal').modal('hide');
+                            }
+
+                            // Refresh the page after a short delay
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
+                        } else {
+                            showToast('Error saat memvalidasi dokumen', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('Error saat memvalidasi dokumen', 'error');
+                    })
+                    .finally(() => {
+                        // Re-enable buttons
+                        if (status === 'sesuai') {
+                            $(`.aeo-validation-btn[data-question-id="${questionId}"]`).prop('disabled', false);
+                        } else {
+                            $('#aeoValidationForm button[type="submit"]').prop('disabled', false).html(
+                                '<i class="fas fa-save"></i> Simpan Validasi');
+                        }
+                    });
+            }
+
+            // Reset modal when closed
+            $('#aeoValidationModal').on('hidden.bs.modal', function() {
+                $('#aeoValidationForm')[0].reset();
+                $('#aeoValidationForm').removeClass('was-validated');
+                $('#questionId').val('');
+                $('.form-control').removeClass('is-invalid');
+            });
+
+            // Real-time validation for notes field
+            $('#aeoManagerNotes').on('input', function() {
+                const value = $(this).val().trim();
+                if (value.length > 0) {
+                    $(this).removeClass('is-invalid').addClass('is-valid');
+                } else {
+                    $(this).removeClass('is-valid').addClass('is-invalid');
+                }
+            });
+
+            // Real-time validation for due date field
+            $('#dueDate').on('change', function() {
+                const value = $(this).val();
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+                if (value && value >= tomorrowStr) {
+                    $(this).removeClass('is-invalid').addClass('is-valid');
+                } else {
+                    $(this).removeClass('is-valid').addClass('is-invalid');
+                }
             });
 
             // Handle AEO Manager validation toggle switches
@@ -1199,6 +914,134 @@
                     $(this).remove();
                 });
             }
+
+            // Handle AEO Manager Undo All button clicks
+            $('.aeo-undo-all-btn').on('click', function() {
+                const questionId = $(this).data('question-id');
+                const button = $(this);
+
+                if (confirm(
+                        'Are you sure you want to undo ALL AEO Manager validations for this question? This will reset all validated documents to pending status.'
+                    )) {
+                    // Disable button during request
+                    button.prop('disabled', true);
+
+                    const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+                    fetch(`/aeo/questions/${questionId}/aeo-manager-undo-all`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: JSON.stringify({})
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                showToast(data.message, 'success');
+
+                                // Refresh the page to show updated status
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1000);
+                            } else {
+                                showToast('Error undoing AEO Manager validations', 'error');
+                                button.prop('disabled', false);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showToast('Error undoing AEO Manager validations', 'error');
+                            button.prop('disabled', false);
+                        });
+                } else {
+                    // Re-enable button if user cancelled
+                    button.prop('disabled', false);
+                }
+            });
+
+            // Handle Approval buttons
+            $('.approval-btn').on('click', function() {
+                const button = $(this);
+                const questionId = button.data('question-id');
+                const approvalType = button.data('approval-type');
+
+                // Set modal data
+                $('#approvalQuestionId').val(questionId);
+                $('#approvalType').val(approvalType);
+                $('#approvalMessage').text(
+                    `You are about to process Approval ${approvalType} for this question.`);
+                $('#approvalModalLabel').html(
+                    `<i class="fas fa-check-circle text-success"></i> Process Approval ${approvalType}`);
+
+                // Show modal
+                $('#approvalModal').modal('show');
+            });
+
+            // Handle Approval Form submission
+            $('#approvalForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const form = $(this);
+                const questionId = $('#approvalQuestionId').val();
+                const approvalType = $('#approvalType').val();
+                const notes = $('#approvalNotes').val().trim();
+
+                // Show loading state
+                $('#approvalSubmitBtn').prop('disabled', true).html(
+                    '<i class="fas fa-spinner fa-spin"></i> Processing...');
+
+                const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+                fetch(`/aeo/questions/${questionId}/approval`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            approval_type: approvalType,
+                            notes: notes
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast(`Approval ${approvalType} processed successfully!`, 'success');
+
+                            // Hide modal
+                            $('#approvalModal').modal('hide');
+
+                            // Refresh the page to show updated status
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            showToast(data.message || `Error processing Approval ${approvalType}`,
+                                'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast(`Error processing Approval ${approvalType}`, 'error');
+                    })
+                    .finally(() => {
+                        // Re-enable button
+                        $('#approvalSubmitBtn').prop('disabled', false).html(
+                            '<i class="fas fa-check"></i> Approve');
+                    });
+            });
+
+            // Reset approval modal when closed
+            $('#approvalModal').on('hidden.bs.modal', function() {
+                $('#approvalForm')[0].reset();
+                $('#approvalQuestionId').val('');
+                $('#approvalType').val('');
+                $('#approvalNotes').val('');
+            });
         });
     </script>
 <?php $__env->stopPush(); ?>

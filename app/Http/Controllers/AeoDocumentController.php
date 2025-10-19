@@ -91,8 +91,9 @@ class AeoDocumentController extends Controller
         }
 
         // Determine validation status
-        // New documents are ALWAYS created as invalid, master documents can be marked as valid
+        // New documents are ALWAYS created as invalid, master documents are AUTOMATICALLY approved and valid
         $isValid = false; // Initialize default value
+        $status = null; // Initialize status
 
         if ($data['document_type'] === 'new') {
             // Force new documents to be invalid
@@ -100,26 +101,26 @@ class AeoDocumentController extends Controller
                 'is_valid' => false,
                 'validation_notes' => $r->validation_notes,
             ];
+            $status = 'draft'; // New documents start as draft
         } else {
-            // Master documents can be marked as valid or invalid
-            $isValid = ($r->has('mark_as_valid') && $r->mark_as_valid == 1) || ($r->has('is_valid') && $r->is_valid == 1);
+            // Master documents are AUTOMATICALLY validated but AEO Manager approval remains MANUAL
+            $isValid = true; // Always true for master documents
+            $status = 'in_review'; // Needs AEO Manager approval
 
-            if ($isValid) {
-                $validationData = [
-                    'is_valid' => true,
-                    'validated_at' => now(),
-                    'validated_by' => $user->id,
-                ];
-            } else {
-                $validationData = [
-                    'is_valid' => false,
-                    'validation_notes' => $r->validation_notes,
-                ];
+            $validationData = [
+                'is_valid' => true,
+                'validated_at' => now(),
+                'validated_by' => $user->id,
+                // AEO Manager fields remain null for manual approval
+                'aeo_manager_valid' => null,
+                'aeo_manager_validated_at' => null,
+                'aeo_manager_validated_by' => null,
+                'aeo_manager_notes' => null,
+            ];
 
-                // Only add validation_files for master documents when explicitly provided
-                if (! empty($validationPaths)) {
-                    $validationData['validation_files'] = $validationPaths;
-                }
+            // Add validation_files for master documents when provided
+            if (! empty($validationPaths)) {
+                $validationData['validation_files'] = $validationPaths;
             }
         }
 
@@ -131,6 +132,7 @@ class AeoDocumentController extends Controller
             'nama_dokumen' => $data['nama_dokumen'],
             'no_sop_wi_std_form_other' => $data['no_sop_wi_std_form_other'] ?? null,
             'files' => $paths,
+            'status' => $status,
             'created_by' => $user->id,
             'updated_by' => $user->id,
         ] + $validationData);
@@ -147,8 +149,8 @@ class AeoDocumentController extends Controller
             }
         }
 
-        $message = $isValid
-            ? 'New document created and marked as valid successfully'
+        $message = $data['document_type'] === 'master'
+            ? 'Master document created and automatically validated - awaiting AEO Manager approval'
             : 'New document created successfully';
 
         return redirect()->route('aeo.questions.index')->with('success', $message);
@@ -412,6 +414,43 @@ class AeoDocumentController extends Controller
                 'message' => $message,
                 'aeo_manager_valid' => $isValid,
                 'status' => $status,
+            ]);
+        }
+
+        return redirect()->route('aeo.questions.index')->with('success', $message);
+    }
+
+    public function aeoManagerUndo(Request $request, AeoDocument $document)
+    {
+        $this->authorize('update', $document);
+
+        // Reset AEO Manager validation to null (undo approval/rejection)
+        $updateData = [
+            'aeo_manager_valid' => null,
+            'aeo_manager_notes' => null,
+            'aeo_manager_validated_at' => null,
+            'aeo_manager_validated_by' => null,
+            'updated_by' => auth()->id(),
+        ];
+
+        // Update status back to in_review for master documents, or draft for new documents
+        if ($document->document_type === 'master') {
+            $updateData['status'] = 'in_review'; // Back to awaiting AEO Manager approval
+        } else {
+            $updateData['status'] = 'draft'; // Back to draft for new documents
+        }
+
+        $document->update($updateData);
+
+        $message = 'AEO Manager validation undone successfully - document back to pending status';
+
+        // Handle AJAX requests
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'aeo_manager_valid' => null,
+                'status' => $updateData['status'],
             ]);
         }
 
