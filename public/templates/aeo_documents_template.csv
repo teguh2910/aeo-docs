@@ -1,4 +1,4 @@
-subcriteria,question,dept,nama_dokumen,no_sop_wi_std_form_other
-AEO-1.1,Apakah perusahaan memiliki sistem manajemen mutu yang terdokumentasi?,IT,Sistem Manajemen Mutu ISO 9001,SOP-IT-001
-AEO-1.2,Apakah perusahaan memiliki prosedur untuk pengendalian dokumen?,IT,Prosedur Pengendalian Dokumen,WI-IT-002
-AEO-2.1,Apakah perusahaan memiliki kebijakan keamanan?,SECURITY,Kebijakan Keamanan Informasi,STD-SEC-001
+subcriteria,question,dept,nama_dokumen,no_sop_wi_std_form_other,document_type
+AEO-1.1,Apakah perusahaan memiliki sistem manajemen mutu yang terdokumentasi?,IT,Sistem Manajemen Mutu ISO 9001,SOP-IT-001,master
+AEO-1.2,Apakah perusahaan memiliki prosedur untuk pengendalian dokumen?,IT,Prosedur Pengendalian Dokumen,WI-IT-002,new
+AEO-2.1,Apakah perusahaan memiliki kebijakan keamanan?,SECURITY,Kebijakan Keamanan Informasi,STD-SEC-001,master

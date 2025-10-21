@@ -46,4 +46,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function canAccessAllDepartments(): bool
+    {
+        return in_array($this->dept, ['AEO', 'admin'], true);
+    }
 }

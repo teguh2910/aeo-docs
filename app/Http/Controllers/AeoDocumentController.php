@@ -17,7 +17,12 @@ class AeoDocumentController extends Controller
 
     public function index()
     {
+        $user = Auth::user();
         $query = AeoDocument::with('question');
+
+        if (! $user->canAccessAllDepartments()) {
+            $query->where('dept', $user->dept ?? 'GENERAL');
+        }
 
         if ($search = request('search')) {
             $query->where(function ($q) use ($search) {
@@ -125,10 +130,15 @@ class AeoDocumentController extends Controller
         }
 
         // Create new document
+        $documentDept = $data['dept'] ?? $userDept;
+        if (! $user->canAccessAllDepartments()) {
+            $documentDept = $userDept;
+        }
+
         $newDocument = AeoDocument::create([
             'aeo_question_id' => $data['aeo_question_id'],
             'document_type' => $data['document_type'],
-            'dept' => $data['dept'] ?? $userDept,
+            'dept' => $documentDept,
             'nama_dokumen' => $data['nama_dokumen'],
             'no_sop_wi_std_form_other' => $data['no_sop_wi_std_form_other'] ?? null,
             'files' => $paths,
@@ -153,7 +163,8 @@ class AeoDocumentController extends Controller
             ? 'Master document created and automatically validated - awaiting AEO Manager approval'
             : 'New document created successfully';
 
-        return redirect()->route('aeo.questions.index')->with('success', $message);
+        // Redirect back to the documents page instead of index
+        return redirect()->route('aeo.questions.documents', $newDocument->aeo_question_id)->with('success', $message);
     }
 
     public function show(AeoDocument $document)
@@ -174,6 +185,8 @@ class AeoDocumentController extends Controller
     public function update(Request $r, AeoDocument $document)
     {
         $this->authorize('update', $document);
+
+        $user = auth()->user();
 
         // Update with all fields (from edit page)
         $data = $r->validate([
@@ -238,10 +251,15 @@ class AeoDocumentController extends Controller
             }
         }
 
+        $updatedDept = $data['dept'];
+        if (! $user->canAccessAllDepartments()) {
+            $updatedDept = $user->dept ?? $document->dept;
+        }
+
         $document->update([
             'aeo_question_id' => $data['aeo_question_id'],
             'document_type' => $data['document_type'],
-            'dept' => $data['dept'],
+            'dept' => $updatedDept,
             'nama_dokumen' => $data['nama_dokumen'],
             'no_sop_wi_std_form_other' => $data['no_sop_wi_std_form_other'] ?? null,
             'status' => $data['status'] ?? null,
@@ -256,12 +274,15 @@ class AeoDocumentController extends Controller
             $message .= ' (new files added)';
         }
 
-        return redirect()->route('aeo.questions.index')->with('success', $message);
+        return redirect()->route('aeo.questions.documents', $document->aeo_question_id)->with('success', $message);
     }
 
     public function destroy(AeoDocument $document)
     {
         $this->authorize('delete', $document);
+
+        // Store question_id before deleting the document
+        $questionId = $document->aeo_question_id;
 
         // Delete all stored files from storage
         foreach (($document->files ?? []) as $p) {
@@ -272,7 +293,7 @@ class AeoDocumentController extends Controller
 
         $document->delete();
 
-        return redirect()->route('aeo.questions.index')->with('success', 'Document deleted successfully');
+        return redirect()->route('aeo.questions.documents', $questionId)->with('success', 'Document deleted successfully');
     }
 
     public function toggleValidation(Request $request, AeoDocument $document)
@@ -342,7 +363,7 @@ class AeoDocumentController extends Controller
             ]);
         }
 
-        return redirect()->route('aeo.questions.index')->with('success', $message);
+        return redirect()->route('aeo.questions.documents', $document->aeo_question_id)->with('success', $message);
     }
 
     public function importForm()
@@ -417,7 +438,7 @@ class AeoDocumentController extends Controller
             ]);
         }
 
-        return redirect()->route('aeo.questions.index')->with('success', $message);
+        return redirect()->route('aeo.questions.documents', $document->aeo_question_id)->with('success', $message);
     }
 
     public function aeoManagerUndo(Request $request, AeoDocument $document)
@@ -454,7 +475,7 @@ class AeoDocumentController extends Controller
             ]);
         }
 
-        return redirect()->route('aeo.questions.index')->with('success', $message);
+        return redirect()->route('aeo.questions.documents', $document->aeo_question_id)->with('success', $message);
     }
 
     public function downloadTemplate()

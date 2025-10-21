@@ -2,6 +2,7 @@
 
 <?php $__env->startPush('styles'); ?>
     <style>
+        /* Subcriteria grouping styles */
         .subcriteria-group-secondary {
             background-color: #f8f9fa !important;
             border-left: 3px solid #0d6efd;
@@ -10,6 +11,251 @@
         .subcriteria-indicator {
             color: #6c757d;
             font-size: 0.85em;
+        }
+
+        /* DataTables Bootstrap 5 Integration */
+        #aeoQuestionsTable_wrapper {
+            padding: 0;
+        }
+
+        #aeoQuestionsTable_wrapper .row {
+            margin-bottom: 1rem;
+        }
+
+
+
+        /* Export buttons styling */
+        .dt-buttons {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .dt-button {
+            margin: 0 !important;
+        }
+
+        /* Table styling */
+        #aeoQuestionsTable {
+            width: 100% !important;
+        }
+
+        #aeoQuestionsTable thead th {
+            background-color: #212529;
+            color: white;
+            font-weight: 600;
+            border-color: #212529;
+            padding: 0.5rem 0.4rem;
+            vertical-align: middle;
+            font-size: 0.875rem;
+        }
+
+        #aeoQuestionsTable tbody td {
+            padding: 0.5rem 0.4rem;
+            vertical-align: top;
+            font-size: 0.85rem;
+        }
+
+        /* Column width customization */
+        #aeoQuestionsTable th:first-child,
+        #aeoQuestionsTable td:first-child {
+            width: 50px;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        #aeoQuestionsTable th:nth-child(2),
+        #aeoQuestionsTable td:nth-child(2) {
+            width: 80px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .dt-buttons {
+                justify-content: center;
+            }
+
+            #aeoQuestionsTable {
+                font-size: 0.875rem;
+            }
+        }
+
+        /* Badge styling */
+        .badge {
+            font-weight: 500;
+            padding: 0.25em 0.5em;
+            font-size: 0.75rem;
+        }
+
+        /* Button group styling */
+        .btn-group-vertical {
+            width: 100%;
+        }
+
+        .btn-group-vertical .btn {
+            margin-bottom: 0.25rem;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        /* Smaller buttons in table */
+        #aeoQuestionsTable .btn-sm {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        /* Compact action buttons */
+        #aeoQuestionsTable .btn-group-vertical .btn {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.4rem;
+        }
+
+        /* Compact alerts */
+        .alert {
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .alert ul {
+            font-size: 0.85rem;
+            padding-left: 1.25rem;
+        }
+
+        .alert small {
+            font-size: 0.75rem;
+        }
+
+        /* Validation button styling */
+        .validation-form {
+            background-color: #f8f9fa;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .badge.fs-6 {
+            font-size: 0.8rem !important;
+            padding: 0.35em 0.6em;
+        }
+
+        .btn-group-sm .btn {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        /* Smaller text in table */
+        #aeoQuestionsTable small {
+            font-size: 0.7rem;
+        }
+
+        #aeoQuestionsTable .text-muted {
+            font-size: 0.75rem;
+        }
+
+        /* Smaller icons in buttons */
+        #aeoQuestionsTable .btn i,
+        .btn-sm i {
+            font-size: 0.85em;
+        }
+
+        /* Compact card header */
+        .card-header h5 {
+            font-size: 1.1rem;
+        }
+
+        /* Upload form styling */
+        .upload-form {
+            border: 2px dashed #dee2e6;
+            margin-top: 0.5rem;
+        }
+
+        .upload-form:hover {
+            border-color: #0d6efd;
+        }
+
+        .alert-danger small,
+        .alert-warning small {
+            margin: 0;
+        }
+
+        /* New Document styling */
+        .new-document-form {
+            background-color: #d1edff;
+            border: 1px solid #0dcaf0;
+        }
+
+        /* Dropdown menu styling */
+        .dropdown-menu .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .dropdown-menu .dropdown-item i {
+            width: 16px;
+            margin-right: 5px;
+        }
+
+        /* Validation toggle styling */
+        .form-switch .form-check-input {
+            width: 2.5em;
+            height: 1.25em;
+        }
+
+        .form-switch .form-check-input:checked {
+            background-color: #198754;
+            border-color: #198754;
+        }
+
+        .form-switch .form-check-input:focus {
+            box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+        }
+
+        .validation-toggle:disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .valid-text {
+            font-size: 0.875rem;
+            transition: color 0.3s ease;
+        }
+
+        .toast {
+            min-width: 300px;
+        }
+
+        /* AEO Manager Validation Buttons */
+        .aeo-validation-btn {
+            font-size: 0.875rem;
+            margin-bottom: 2px;
+        }
+
+        .aeo-validation-btn:disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Modal styling improvements */
+        .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .modal-footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        /* Form validation styling */
+        .was-validated .form-control:invalid,
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            padding-right: calc(1.5em + 0.75rem);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 3.6.7.8L6.6 6l-.1 1.4'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
         }
     </style>
 <?php $__env->stopPush(); ?>
@@ -20,32 +266,98 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title mb-0">
+                        <h5 class="card-title mb-0">
                             <i class="fas fa-file-shield"></i> AEO Questions & Documents Management
-                        </h4>
+                        </h5>
                     </div>
                     <div class="card-body">
                         <?php
                             $userDept = auth()->user()->dept ?? 'GENERAL';
-                            $canApprove = in_array($userDept, ['AEO', 'admin']);
+                            $isAeoOrAdmin = in_array($userDept, ['AEO', 'admin']);
+                            $canApprove = $userDept === 'admin'; // Only admin can approve
+                            $canValidate = in_array($userDept, ['AEO', 'admin']); // AEO and admin can validate
                         ?>
 
-                        <?php if($canApprove): ?>
-                            <div class="alert alert-info mb-3">
-                                <i class="fas fa-shield-alt"></i>
-                                <strong>AEO Manager Access:</strong> You have approval permissions and can see questions
-                                from all departments.
-                            </div>
-                        <?php endif; ?>
+                        <div class="mb-3">
+                            <?php if($userDept === 'admin'): ?>
+                                <div class="alert alert-danger">
+                                    <i class="fas fa-crown"></i>
+                                    <strong>Administrator Access:</strong> You have full permissions:
+                                    <ul class="mb-0 mt-2">
+                                        <li>View questions from <strong>all departments</strong></li>
+                                        <li>Edit and delete <strong>any question</strong></li>
+                                        <li>Validate documents (AEO Manager validation)</li>
+                                        <li><strong>Process Approval 1 & 2 (Admin only)</strong></li>
+                                        <li>Import and export data</li>
+                                    </ul>
+                                    <small class="text-muted mt-2 d-block">Your Department:
+                                        <strong><?php echo e($userDept); ?></strong> | Logged
+                                        in as: <strong><?php echo e(auth()->user()->name); ?></strong></small>
+                                </div>
+                            <?php elseif($userDept === 'AEO'): ?>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <strong>AEO Manager Access:</strong> You have validation permissions:
+                                    <ul class="mb-0 mt-2">
+                                        <li>View questions from <strong>all departments</strong></li>
+                                        <li>Edit and delete <strong>any question</strong></li>
+                                        <li>Validate documents (AEO Manager validation)</li>
+                                        <li class="text-muted"><s>Process approvals</s> (Admin only)</li>
+                                        <li>Import and export data</li>
+                                    </ul>
+                                    <small class="text-muted mt-2 d-block">Your Department:
+                                        <strong><?php echo e($userDept); ?></strong> | Logged
+                                        in as: <strong><?php echo e(auth()->user()->name); ?></strong></small>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Department View:</strong> You are viewing questions for your department only:
+                                    <strong><?php echo e($userDept); ?></strong>
+                                    <ul class="mb-0 mt-2">
+                                        <li>You can only see questions assigned to <strong><?php echo e($userDept); ?></strong></li>
+                                        <li>You can edit and delete questions from your department</li>
+                                        <li>Validations require AEO/Admin access</li>
+                                        <li>Approvals require Admin access only</li>
+                                    </ul>
+                                    <small class="text-muted mt-2 d-block">Logged in as:
+                                        <strong><?php echo e(auth()->user()->name); ?></strong></small>
+                                </div>
+                            <?php endif; ?>
+                        </div>
 
                         <div class="mb-3">
-                            <div class="d-flex gap-2">
-                                <a href="<?php echo e(route('aeo.questions.import.form')); ?>" class="btn btn-success">
-                                    <i class="fas fa-file-excel"></i> Import Excel
-                                </a>
-                                <a href="<?php echo e(route('aeo.questions.create')); ?>" class="btn btn-primary">
-                                    <i class="fas fa-plus"></i> Add Question
-                                </a>
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                <div class="d-flex gap-2">
+                                    <a href="<?php echo e(route('aeo.questions.import.form')); ?>" class="btn btn-success btn-sm">
+                                        <i class="fas fa-file-excel"></i> Import Excel
+                                    </a>
+                                    <a href="<?php echo e(route('aeo.questions.create')); ?>" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-plus"></i> Add Question
+                                    </a>
+                                </div>
+
+                                <?php if($isAeoOrAdmin && !empty($departments)): ?>
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <label for="deptFilter" class="mb-0 fw-semibold">
+                                            <i class="fas fa-filter"></i> Filter by Department:
+                                        </label>
+                                        <select id="deptFilter" class="form-select form-select-sm"
+                                            style="width: auto; min-width: 150px;">
+                                            <option value="all"
+                                                <?php echo e(!$filterDept || $filterDept == 'all' ? 'selected' : ''); ?>>
+                                                All Departments
+                                            </option>
+                                            <?php $__currentLoopData = $departments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $dept): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($dept); ?>"
+                                                    <?php echo e($filterDept == $dept ? 'selected' : ''); ?>>
+                                                    <?php echo e($dept); ?>
+
+                                                </option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </select>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
 
@@ -54,6 +366,7 @@
                                 <thead class="table-dark">
                                     <tr>
                                         <th class="text-center">No</th>
+                                        <th class="text-center">Dept</th>
                                         <th class="text-center">Kondisi dan Persyaratan</th>
                                         <th class="text-center">Pertanyaan</th>
                                         
@@ -71,6 +384,9 @@
                                             <tr
                                                 class="align-top <?php echo e($questionIndex > 0 ? 'subcriteria-group-secondary' : ''); ?>">
                                                 <td class="text-center"><?php echo e($counter++); ?></td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-primary"><?php echo e($row->dept); ?></span>
+                                                </td>
                                                 <td>
                                                     <?php if($questionIndex == 0): ?>
                                                         <strong class="text-primary"><?php echo e($subcriteria); ?></strong>
@@ -152,93 +468,88 @@
                                                         </div>
                                                 </td>
 
-                                <!-- COLUMN: FINAL VALIDASI BY AEO MGR -->
-                                <td class="text-center">
-                                    <?php
-                                        $hasValidatedDocs =
-                                            $row->documents
-                                                ->where('aeo_manager_validated_at', '!=', null)
-                                                ->count() > 0;
-                                        $allValid = $row->documents->every(
-                                            fn($doc) => $doc->aeo_manager_valid === true,
-                                        );
-                                        $hasInvalid = $row->documents->some(
-                                            fn($doc) => $doc->aeo_manager_valid === false,
-                                        );
-                                        $canValidateAeoManager = in_array($userDept, ['AEO', 'admin']);
-                                    ?>
+                                                <!-- COLUMN: FINAL VALIDASI BY AEO MGR -->
+                                                <td class="text-center">
+                                                    <?php
+                                                        $hasValidatedDocs =
+                                                            $row->documents
+                                                                ->where('aeo_manager_validated_at', '!=', null)
+                                                                ->count() > 0;
+                                                        $allValid = $row->documents->every(
+                                                            fn($doc) => $doc->aeo_manager_valid === true,
+                                                        );
+                                                        $hasInvalid = $row->documents->some(
+                                                            fn($doc) => $doc->aeo_manager_valid === false,
+                                                        );
+                                                        $canValidateAeoManager = in_array($userDept, ['AEO', 'admin']);
+                                                    ?>
 
-                                    <?php if($hasValidatedDocs): ?>
-                                        <?php if($allValid): ?>
-                                            <span class="badge bg-success">Sesuai</span>
-                                            <?php if($canValidateAeoManager): ?>
-                                                <br>
-                                                <button type="button"
-                                                    class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
-                                                    data-question-id="<?php echo e($row->id); ?>"
-                                                    title="Undo All AEO Manager Validations">
-                                                    <i class="fas fa-undo"></i> Undo All
-                                                </button>
-                                            <?php endif; ?>
-                                        <?php elseif($hasInvalid): ?>
-                                            <span class="badge bg-danger">Tidak Sesuai</span>
-                                            <?php if($canValidateAeoManager): ?>
-                                                <br>
-                                                <button type="button"
-                                                    class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
-                                                    data-question-id="<?php echo e($row->id); ?>"
-                                                    title="Undo All AEO Manager Validations">
-                                                    <i class="fas fa-undo"></i> Undo All
-                                                </button>
-                                            <?php endif; ?>
-                                            <?php if($row->documents->where('aeo_manager_valid', false)->first()?->due_date): ?>
-                                                <br><small class="text-muted">Due:
-                                                    <?php echo e($row->documents->where('aeo_manager_valid', false)->first()->due_date); ?></small>
-                                            <?php endif; ?>
-                                        <?php else: ?>
-                                            <span class="badge bg-warning">Partial</span>
-                                            <?php if($canValidateAeoManager): ?>
-                                                <br>
-                                                <button type="button"
-                                                    class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
-                                                    data-question-id="<?php echo e($row->id); ?>"
-                                                    title="Undo All AEO Manager Validations">
-                                                    <i class="fas fa-undo"></i> Undo All
-                                                </button>
-                                            <?php endif; ?>
-                                        <?php endif; ?>
-                                    <?php else: ?>
-                                        <?php if($canValidateAeoManager): ?>
-                                            <div class="btn-group-vertical gap-1">
-                                                <button type="button"
-                                                    class="btn btn-success btn-sm aeo-validation-btn"
-                                                    data-question-id="<?php echo e($row->id); ?>"
-                                                    data-status="sesuai">
-                                                    <i class="fas fa-check"></i> Sesuai
-                                                </button>
-                                                <button type="button"
-                                                    class="btn btn-danger btn-sm aeo-validation-btn"
-                                                    data-question-id="<?php echo e($row->id); ?>"
-                                                    data-status="tidak_sesuai" data-bs-toggle="modal"
-                                                    data-bs-target="#aeoValidationModal">
-                                                    <i class="fas fa-times"></i> Tidak Sesuai
-                                                </button>
-                                            </div>
-                                        <?php else: ?>
-                                            <span class="badge bg-secondary">
-                                                <i class="fas fa-lock"></i> AEO Access Only
-                                            </span>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
-                                </td>
+                                                    <?php if($hasValidatedDocs): ?>
+                                                        <?php if($allValid): ?>
+                                                            <span class="badge bg-success">Sesuai</span>
+                                                            <?php if($canValidateAeoManager): ?>
+                                                                <br>
+                                                                <button type="button"
+                                                                    class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
+                                                                    title="Undo All AEO Manager Validations">
+                                                                    <i class="fas fa-undo"></i> Undo All
+                                                                </button>
+                                                            <?php endif; ?>
+                                                        <?php elseif($hasInvalid): ?>
+                                                            <span class="badge bg-danger">Tidak Sesuai</span>
+                                                            <?php if($canValidateAeoManager): ?>
+                                                                <br>
+                                                                <button type="button"
+                                                                    class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
+                                                                    title="Undo All AEO Manager Validations">
+                                                                    <i class="fas fa-undo"></i> Undo All
+                                                                </button>
+                                                            <?php endif; ?>
+                                                            <?php if($row->documents->where('aeo_manager_valid', false)->first()?->due_date): ?>
+                                                                <br><small class="text-muted">Due:
+                                                                    <?php echo e($row->documents->where('aeo_manager_valid', false)->first()->due_date); ?></small>
+                                                            <?php endif; ?>
+                                                        <?php else: ?>
+                                                            <span class="badge bg-warning">Partial</span>
+                                                            <?php if($canValidateAeoManager): ?>
+                                                                <br>
+                                                                <button type="button"
+                                                                    class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
+                                                                    title="Undo All AEO Manager Validations">
+                                                                    <i class="fas fa-undo"></i> Undo All
+                                                                </button>
+                                                            <?php endif; ?>
+                                                        <?php endif; ?>
+                                                    <?php else: ?>
+                                                        <?php if($canValidateAeoManager): ?>
+                                                            <div class="btn-group-vertical gap-1">
+                                                                <button type="button"
+                                                                    class="btn btn-success btn-sm aeo-validation-btn"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
+                                                                    data-status="sesuai">
+                                                                    <i class="fas fa-check"></i> Sesuai
+                                                                </button>
+                                                                <button type="button"
+                                                                    class="btn btn-danger btn-sm aeo-validation-btn"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
+                                                                    data-status="tidak_sesuai" data-bs-toggle="modal"
+                                                                    data-bs-target="#aeoValidationModal">
+                                                                    <i class="fas fa-times"></i> Tidak Sesuai
+                                                                </button>
+                                                            </div>
+                                                        <?php else: ?>
+                                                            <span class="badge bg-secondary">
+                                                                <i class="fas fa-lock"></i> AEO Access Only
+                                                            </span>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
+                                                </td>
 
                                                 <!-- COLUMN: APPROVAL -->
                                                 <td class="text-center">
-                                                    <?php
-                                                        $userDept = auth()->user()->dept ?? 'GENERAL';
-                                                        $canApprove = in_array($userDept, ['AEO', 'admin']);
-                                                    ?>
-
                                                     <div class="btn-group-vertical gap-1">
                                                         <?php if($row->approval_1 === true): ?>
                                                             <div class="mb-2">
@@ -266,6 +577,9 @@
                                                             <?php else: ?>
                                                                 <span class="badge bg-secondary">
                                                                     <i class="fas fa-clock"></i> Pending Approval 1
+                                                                    <?php if($userDept === 'AEO'): ?>
+                                                                        <br><small class="text-muted">(Admin only)</small>
+                                                                    <?php endif; ?>
                                                                 </span>
                                                             <?php endif; ?>
                                                         <?php endif; ?>
@@ -296,6 +610,9 @@
                                                             <?php else: ?>
                                                                 <span class="badge bg-secondary">
                                                                     <i class="fas fa-clock"></i> Pending Approval 2
+                                                                    <?php if($userDept === 'AEO'): ?>
+                                                                        <br><small class="text-muted">(Admin only)</small>
+                                                                    <?php endif; ?>
                                                                 </span>
                                                             <?php endif; ?>
                                                         <?php else: ?>
@@ -307,6 +624,9 @@
                                                             <?php else: ?>
                                                                 <span class="badge bg-light text-muted">
                                                                     <i class="fas fa-minus"></i> Awaiting Approval 1
+                                                                    <?php if($userDept === 'AEO'): ?>
+                                                                        <br><small class="text-muted">(Admin only)</small>
+                                                                    <?php endif; ?>
                                                                 </span>
                                                             <?php endif; ?>
                                                         <?php endif; ?>
@@ -315,31 +635,53 @@
 
                                                 <!-- COLUMN: AKSI -->
                                                 <td class="text-center">
+                                                    <?php
+                                                        // AEO and admin can edit/delete any question
+                                                        // Other users can only edit/delete questions from their department
+                                                        $canEditDelete = $isAeoOrAdmin || $row->dept === $userDept;
+                                                    ?>
+
                                                     <div class="btn-group-vertical" role="group">
-                                                        <a href="<?php echo e(route('aeo.questions.edit', $row)); ?>"
-                                                            class="btn btn-sm btn-warning">
-                                                            <i class="fas fa-edit"></i>
-                                                        </a>
-                                                        <form action="<?php echo e(route('aeo.questions.destroy', $row)); ?>"
-                                                            method="POST" class="d-inline">
-                                                            <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
-                                                            <button type="submit"
-                                                                onclick="return confirm('Delete this question and all related documents?')"
-                                                                class="btn btn-sm btn-danger">
-                                                                <i class="fas fa-trash"></i>
+                                                        <?php if($canEditDelete): ?>
+                                                            <a href="<?php echo e(route('aeo.questions.edit', $row)); ?>"
+                                                                class="btn btn-sm btn-warning" title="Edit Question">
+                                                                <i class="fas fa-edit"></i> Edit
+                                                            </a>
+                                                            <form action="<?php echo e(route('aeo.questions.destroy', $row)); ?>"
+                                                                method="POST" class="d-inline">
+                                                                <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
+                                                                <button type="submit"
+                                                                    onclick="return confirm('Delete this question and all related documents?')"
+                                                                    class="btn btn-sm btn-danger" title="Delete Question">
+                                                                    <i class="fas fa-trash"></i> Delete
+                                                                </button>
+                                                            </form>
+                                                        <?php else: ?>
+                                                            <button type="button" class="btn btn-sm btn-secondary"
+                                                                disabled
+                                                                title="You can only edit/delete questions from your department">
+                                                                <i class="fas fa-lock"></i> Locked
                                                             </button>
-                                                        </form>
+                                                        <?php endif; ?>
                                                     </div>
                                                 </td>
                                             </tr>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <tr>
-                                            <td colspan="8" class="text-center py-4">
+                                            <td colspan="9" class="text-center py-4">
                                                 <div class="text-muted">
                                                     <i class="fas fa-inbox fa-2x mb-2"></i><br>
-                                                    No questions found. <a href="<?php echo e(route('aeo.questions.create')); ?>">Add
-                                                        your first question</a>
+                                                    <?php if($isAeoOrAdmin): ?>
+                                                        No questions found in the system.
+                                                    <?php else: ?>
+                                                        No questions found for your department (<?php echo e($userDept); ?>).
+                                                    <?php endif; ?>
+                                                    <br>
+                                                    <a href="<?php echo e(route('aeo.questions.create')); ?>"
+                                                        class="btn btn-primary mt-2">
+                                                        <i class="fas fa-plus"></i> Add your first question
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -449,6 +791,24 @@
 
 <?php $__env->startPush('styles'); ?>
     <style>
+        /* Department Filter Styling */
+        #deptFilter {
+            border: 2px solid #0d6efd;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #deptFilter:hover {
+            border-color: #0a58ca;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+        }
+
+        #deptFilter:focus {
+            border-color: #0a58ca;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
         /* Custom DataTables styling */
         #aeoQuestionsTable_wrapper .row {
             margin-bottom: 1rem;
@@ -491,12 +851,13 @@
         }
 
         .badge.fs-6 {
-            font-size: 1rem !important;
-            padding: 0.5em 0.75em;
+            font-size: 0.8rem !important;
+            padding: 0.35em 0.6em;
         }
 
         .btn-group-sm .btn {
-            font-size: 0.875rem;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
         }
 
         /* Upload form styling */
@@ -605,14 +966,15 @@
                 "ordering": true,
                 "info": true,
                 "autoWidth": false,
-                "responsive": false,
+                "responsive": true,
 
                 // Page length options
                 "lengthMenu": [
                     [10, 25, 50, 100, -1],
                     [10, 25, 50, 100, "All"]
                 ],
-                "pageLength": 10,
+                "pageLength": 25,
+
                 // Default ordering
                 "order": [
                     [0, 'asc']
@@ -620,40 +982,36 @@
 
                 // Column definitions
                 "columnDefs": [{
-                    "targets": 0, // No column
-                    "width": "60px",
-                    "className": "text-center",
-                    "orderable": true
-                }],
-
-                // Language customization
-                "language": {
-                    "lengthMenu": "Show _MENU_ entries per page",
-                    "zeroRecords": "No matching records found",
-                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
-                    "infoEmpty": "No entries available",
-                    "infoFiltered": "(filtered from _MAX_ total entries)",
-                    "search": "Search:",
-                    "paginate": {
-                        "first": "First",
-                        "last": "Last",
-                        "next": "Next",
-                        "previous": "Previous"
+                        "targets": 0, // No column
+                        "width": "50px",
+                        "className": "text-center",
+                        "orderable": true
+                    },
+                    {
+                        "targets": 1, // Dept column
+                        "width": "80px",
+                        "className": "text-center",
+                        "orderable": true
+                    },
+                    {
+                        "targets": [5, 6, 7], // Detail, Validasi, Approval, Aksi columns
+                        "orderable": false
                     }
-                },
+                ],
 
-                // Export buttons
+                // Bootstrap 5 styling
                 "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
                     '<"row"<"col-sm-12 col-md-6"B>>' +
                     '<"row"<"col-sm-12"tr>>' +
                     '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
 
+                // Export buttons
                 "buttons": [{
                         extend: 'copy',
                         className: 'btn btn-secondary btn-sm',
-                        text: '<i class="fas fa-copy"></i> Copy',
+                        text: '<i class="fas fa-copy"></i> Salin',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6] // Export all columns except Actions
+                            columns: [0, 1, 2, 3, 4] // Export relevant columns
                         }
                     },
                     {
@@ -661,28 +1019,54 @@
                         className: 'btn btn-success btn-sm',
                         text: '<i class="fas fa-file-excel"></i> Excel',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6]
-                        }
+                            columns: [0, 1, 2, 3, 4]
+                        },
+                        title: 'AEO Questions - <?php echo e(now()->format('d-m-Y')); ?>'
                     },
                     {
                         extend: 'pdf',
                         className: 'btn btn-danger btn-sm',
                         text: '<i class="fas fa-file-pdf"></i> PDF',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6]
+                            columns: [0, 1, 2, 3, 4]
                         },
                         orientation: 'landscape',
-                        pageSize: 'A4'
+                        pageSize: 'A4',
+                        title: 'AEO Questions',
+                        customize: function(doc) {
+                            doc.defaultStyle.fontSize = 9;
+                            doc.styles.tableHeader.fontSize = 10;
+                        }
                     },
                     {
                         extend: 'print',
                         className: 'btn btn-info btn-sm',
-                        text: '<i class="fas fa-print"></i> Print',
+                        text: '<i class="fas fa-print"></i> Cetak',
                         exportOptions: {
-                            columns: [0, 1, 2, 3]
+                            columns: [0, 1, 2, 3, 4]
+                        },
+                        title: 'AEO Questions',
+                        customize: function(win) {
+                            $(win.document.body).css('font-size', '10pt');
+                            $(win.document.body).find('table').addClass('compact').css('font-size',
+                                '10pt');
                         }
                     }
                 ]
+            });
+
+            // Handle department filter change
+            $('#deptFilter').on('change', function() {
+                const selectedDept = $(this).val();
+                const currentUrl = new URL(window.location.href);
+
+                if (selectedDept === 'all') {
+                    currentUrl.searchParams.delete('dept');
+                } else {
+                    currentUrl.searchParams.set('dept', selectedDept);
+                }
+
+                window.location.href = currentUrl.toString();
             });
 
             // Handle AEO Manager validation buttons

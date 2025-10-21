@@ -1,4 +1,5 @@
-subcriteria,question,keterangan
-AEO-1.1,Apakah perusahaan memiliki sistem manajemen mutu yang terdokumentasi?,Sistem manajemen mutu sesuai standar ISO 9001
-AEO-1.2,Apakah perusahaan memiliki prosedur untuk pengendalian dokumen?,Prosedur yang mengatur pembuatan, review, approval, dan distribusi dokumen
-AEO-2.1,Apakah perusahaan memiliki kebijakan keamanan informasi?,Kebijakan yang mencakup aspek keamanan fisik, logis, dan administratif
+subcriteria,question,keterangan,department_code
+"Kepatuhan terhadap peraturan kepabeanan dan/atau peraturan lain terkait","Apakah Saudara memiliki prosedur terkait dengan pembuatan dan penyampaian dokumen kepabeanan dan penjaminan kualitas? Contoh, prosedur pembuatan dokumen pabean. * ",-,PQD
+"Kepatuhan terhadap peraturan kepabeanan dan/atau peraturan lain terkait","Apakah Saudara memiliki prosedur untuk memitigasi pelanggaran yang terjadi terkait dengan kepatuhan kepabeanan dan/atau cukai? * ",-,PQD
+"Sistem pengelolaan data perdagangan","Apakah perusahaan memiliki kebijakan, prosedur dan/atau pedoman untuk pengelolaan catatan perdagangan? * ",-,ACC
+"Sistem pengelolaan data perdagangan","Apakah perusahaan memelihara sistem pengelolaan catatan perdagangan, termasuk sistem akuntansi yang memungkinkan DJBC untuk melakukan pemeriksaan sesuai dengan ketentuan yang berlaku yang ditujukan terutama untuk impor, ekspor barang, termasuk kegiatan pengiriman barang ekspor impor di dalam daerah pabean? * ",-,ACC

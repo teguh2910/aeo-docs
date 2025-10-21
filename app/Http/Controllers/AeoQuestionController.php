@@ -10,24 +10,48 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AeoQuestionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $userDept = auth()->user()->dept ?? 'GENERAL';
+        $isAeoOrAdmin = in_array($userDept, ['AEO', 'admin']);
 
-        // Group questions by subcriteria for better display
-        // AEO and admin users can see all questions, others see only their department's questions
-        $query = AeoQuestion::query();
+        // Get filter parameter
+        $filterDept = $request->get('dept');
 
-        if (! in_array($userDept, ['AEO', 'admin'])) {
-            $query->where('dept', $userDept);
+        // Get all unique departments for filter dropdown (only for AEO/admin)
+        $departments = [];
+        if ($isAeoOrAdmin) {
+            $departments = AeoQuestion::select('dept')
+                ->distinct()
+                ->whereNotNull('dept')
+                ->orderBy('dept')
+                ->pluck('dept')
+                ->toArray();
         }
 
+        // Build query
+        $query = AeoQuestion::query();
+
+        // Apply department filter based on user role
+        if (! $isAeoOrAdmin) {
+            // Regular users can only see their department
+            $query->where('dept', $userDept);
+        } elseif ($filterDept && $filterDept !== 'all') {
+            // AEO/admin can filter by specific department
+            $query->where('dept', $filterDept);
+        }
+        // If no filter or 'all' is selected, AEO/admin see everything
+
         $rows = $query->with([
-            'documents' => function ($query) use ($userDept) {
-                // For AEO and admin, show all documents; for others, show only their dept documents
-                if (! in_array($userDept, ['AEO', 'admin'])) {
+            'documents' => function ($query) use ($userDept, $isAeoOrAdmin, $filterDept) {
+                // For regular users, show only their dept documents
+                if (! $isAeoOrAdmin) {
                     $query->where('dept', $userDept);
+                } elseif ($filterDept && $filterDept !== 'all') {
+                    // For AEO/admin with filter, show filtered dept documents
+                    $query->where('dept', $filterDept);
                 }
+                // Otherwise show all documents
             },
             'documents.creator',
             'documents.validator',
@@ -39,7 +63,7 @@ class AeoQuestionController extends Controller
             ->get()
             ->groupBy('subcriteria');
 
-        return view('aeo.questions.index', compact('rows'));
+        return view('aeo.questions.index', compact('rows', 'departments', 'filterDept'));
     }
 
     public function showDocuments(AeoQuestion $question)
@@ -103,8 +127,8 @@ class AeoQuestionController extends Controller
     {
         $userDept = auth()->user()->dept ?? 'GENERAL';
 
-        // Check if user can edit this question (question must be from their department)
-        if ($question->dept !== $userDept) {
+        // AEO and admin can edit any question, others can only edit their department's questions
+        if (! in_array($userDept, ['AEO', 'admin']) && $question->dept !== $userDept) {
             abort(403, 'You can only edit questions from your department.');
         }
 
@@ -115,8 +139,8 @@ class AeoQuestionController extends Controller
     {
         $userDept = auth()->user()->dept ?? 'GENERAL';
 
-        // Check if user can update this question (question must be from their department)
-        if ($question->dept !== $userDept) {
+        // AEO and admin can update any question, others can only update their department's questions
+        if (! in_array($userDept, ['AEO', 'admin']) && $question->dept !== $userDept) {
             abort(403, 'You can only update questions from your department.');
         }
 
@@ -145,8 +169,8 @@ class AeoQuestionController extends Controller
     {
         $userDept = auth()->user()->dept ?? 'GENERAL';
 
-        // Check if user can delete this question (question must be from their department)
-        if ($question->dept !== $userDept) {
+        // AEO and admin can delete any question, others can only delete their department's questions
+        if (! in_array($userDept, ['AEO', 'admin']) && $question->dept !== $userDept) {
             abort(403, 'You can only delete questions from your department.');
         }
 
@@ -215,9 +239,9 @@ class AeoQuestionController extends Controller
     {
         $userDept = auth()->user()->dept ?? 'GENERAL';
 
-        // Check if user can validate this question (question must be from their department)
-        if ($question->dept !== $userDept) {
-            abort(403, 'You can only validate questions from your department.');
+        // Only AEO and admin can perform AEO Manager validation
+        if (! in_array($userDept, ['AEO', 'admin'])) {
+            abort(403, 'Only AEO Manager or Admin can validate questions.');
         }
 
         $data = $request->validate([
@@ -247,13 +271,13 @@ class AeoQuestionController extends Controller
     {
         $userDept = auth()->user()->dept ?? 'GENERAL';
 
-        // Check if user can access this question (question must be from their department)
-        if ($question->dept !== $userDept) {
-            abort(403, 'You can only access questions from your department.');
+        // Only AEO and admin can undo validations
+        if (! in_array($userDept, ['AEO', 'admin'])) {
+            abort(403, 'Only AEO Manager or Admin can undo validations.');
         }
 
-        // Get all documents for this question from user's department
-        $documents = $question->documents()->where('dept', $userDept)->get();
+        // Get all documents for this question (AEO can access all departments)
+        $documents = $question->documents()->get();
 
         // Undo AEO Manager validation for all documents
         foreach ($documents as $document) {
@@ -286,13 +310,12 @@ class AeoQuestionController extends Controller
     {
         $userDept = auth()->user()->dept ?? 'GENERAL';
 
-        // Check if user has permission to process approvals (only AEO and admin)
-        if (! in_array($userDept, ['AEO', 'admin'])) {
-            abort(403, 'Only AEO managers and administrators can process approvals.');
+        // Only admin can process approvals
+        if ($userDept !== 'admin') {
+            abort(403, 'Only administrators can process approvals.');
         }
 
-        // AEO and admin users can approve questions from any department
-        // No need to check department match for approval functionality
+        // Admin users can approve questions from any department
 
         $request->validate([
             'approval_type' => 'required|in:1,2',
