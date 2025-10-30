@@ -1,6 +1,6 @@
-@extends('layouts.app')
 
-@push('styles')
+
+<?php $__env->startPush('styles'); ?>
     <style>
         /* Subcriteria grouping styles */
         .subcriteria-group-secondary {
@@ -258,9 +258,9 @@
             background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
         }
     </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
@@ -271,16 +271,16 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        @php
+                        <?php
                             $userDept = auth()->user()->dept ?? 'GENERAL';
                             $isAeoOrAdmin = in_array($userDept, ['AEO', 'admin']);
                             $canApprove1 = in_array($userDept, ['management1', 'admin']); // management1 and admin can approve 1
                             $canApprove2 = in_array($userDept, ['management2', 'admin']); // management2 and admin can approve 2
                             $canValidate = in_array($userDept, ['AEO', 'admin']); // AEO and admin can validate
-                        @endphp
+                        ?>
 
                         <div class="mb-3">
-                            @if ($userDept === 'admin')
+                            <?php if($userDept === 'admin'): ?>
                                 <div class="alert alert-danger">
                                     <i class="fas fa-crown"></i>
                                     <strong>Administrator Access:</strong> You have full permissions:
@@ -292,10 +292,10 @@
                                         <li>Import and export data</li>
                                     </ul>
                                     <small class="text-muted mt-2 d-block">Your Department:
-                                        <strong>{{ $userDept }}</strong> | Logged
-                                        in as: <strong>{{ auth()->user()->name }}</strong></small>
+                                        <strong><?php echo e($userDept); ?></strong> | Logged
+                                        in as: <strong><?php echo e(auth()->user()->name); ?></strong></small>
                                 </div>
-                            @elseif ($userDept === 'AEO')
+                            <?php elseif($userDept === 'AEO'): ?>
                                 <div class="alert alert-info">
                                     <i class="fas fa-shield-alt"></i>
                                     <strong>AEO Manager Access:</strong> You have validation permissions:
@@ -307,10 +307,10 @@
                                         <li>Import and export data</li>
                                     </ul>
                                     <small class="text-muted mt-2 d-block">Your Department:
-                                        <strong>{{ $userDept }}</strong> | Logged
-                                        in as: <strong>{{ auth()->user()->name }}</strong></small>
+                                        <strong><?php echo e($userDept); ?></strong> | Logged
+                                        in as: <strong><?php echo e(auth()->user()->name); ?></strong></small>
                                 </div>
-                            @elseif ($userDept === 'internal_audit')
+                            <?php elseif($userDept === 'internal_audit'): ?>
                                 <div class="alert alert-primary">
                                     <i class="fas fa-clipboard-check"></i>
                                     <strong>Internal Audit Access:</strong> You have internal audit approval permissions:
@@ -323,10 +323,10 @@
                                         <li class="text-muted"><s>Process approvals 1 & 2</s> (Management only)</li>
                                     </ul>
                                     <small class="text-muted mt-2 d-block">Your Department:
-                                        <strong>{{ $userDept }}</strong> | Logged
-                                        in as: <strong>{{ auth()->user()->name }}</strong></small>
+                                        <strong><?php echo e($userDept); ?></strong> | Logged
+                                        in as: <strong><?php echo e(auth()->user()->name); ?></strong></small>
                                 </div>
-                            @elseif ($userDept === 'management1')
+                            <?php elseif($userDept === 'management1'): ?>
                                 <div class="alert alert-success">
                                     <i class="fas fa-user-check"></i>
                                     <strong>Management 1 Access:</strong> You can process Approval 1:
@@ -339,10 +339,10 @@
                                         <li class="text-muted"><s>Process Approval 2</s> (Management 2 only)</li>
                                     </ul>
                                     <small class="text-muted mt-2 d-block">Your Department:
-                                        <strong>{{ $userDept }}</strong> | Logged
-                                        in as: <strong>{{ auth()->user()->name }}</strong></small>
+                                        <strong><?php echo e($userDept); ?></strong> | Logged
+                                        in as: <strong><?php echo e(auth()->user()->name); ?></strong></small>
                                 </div>
-                            @elseif ($userDept === 'management2')
+                            <?php elseif($userDept === 'management2'): ?>
                                 <div class="alert alert-success">
                                     <i class="fas fa-user-check"></i>
                                     <strong>Management 2 Access:</strong> You can process Approval 2:
@@ -355,43 +355,43 @@
                                         <li class="text-muted"><s>Process Approval 1</s> (Management 1 only)</li>
                                     </ul>
                                     <small class="text-muted mt-2 d-block">Your Department:
-                                        <strong>{{ $userDept }}</strong> | Logged
-                                        in as: <strong>{{ auth()->user()->name }}</strong></small>
+                                        <strong><?php echo e($userDept); ?></strong> | Logged
+                                        in as: <strong><?php echo e(auth()->user()->name); ?></strong></small>
                                 </div>
-                            @else
+                            <?php else: ?>
                                 <div class="alert alert-warning">
                                     <i class="fas fa-info-circle"></i>
                                     <strong>Department View:</strong> You are viewing questions for your department only:
-                                    <strong>{{ $userDept }}</strong>
+                                    <strong><?php echo e($userDept); ?></strong>
                                     <ul class="mb-0 mt-2">
-                                        <li>You can only see questions assigned to <strong>{{ $userDept }}</strong>
+                                        <li>You can only see questions assigned to <strong><?php echo e($userDept); ?></strong>
                                         </li>
                                         <li>You can edit and delete questions from your department</li>
                                         <li>Validations require AEO/Admin access</li>
                                         <li>Approvals require Admin access only</li>
                                     </ul>
                                     <small class="text-muted mt-2 d-block">Logged in as:
-                                        <strong>{{ auth()->user()->name }}</strong></small>
+                                        <strong><?php echo e(auth()->user()->name); ?></strong></small>
                                 </div>
-                            @endif
+                            <?php endif; ?>
                         </div>
 
                         <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                @if ($userDept !== 'internal_audit')
+                                <?php if($userDept !== 'internal_audit'): ?>
                                     <div class="d-flex gap-2">
-                                        <a href="{{ route('aeo.questions.import.form') }}" class="btn btn-success btn-sm">
+                                        <a href="<?php echo e(route('aeo.questions.import.form')); ?>" class="btn btn-success btn-sm">
                                             <i class="fas fa-file-excel"></i> Import Excel
                                         </a>
-                                        <a href="{{ route('aeo.questions.create') }}" class="btn btn-primary btn-sm">
+                                        <a href="<?php echo e(route('aeo.questions.create')); ?>" class="btn btn-primary btn-sm">
                                             <i class="fas fa-plus"></i> Add Question
                                         </a>
                                     </div>
-                                @endif
+                                <?php endif; ?>
 
-                                @if (
+                                <?php if(
                                     ($isAeoOrAdmin || $userDept === 'internal_audit' || $userDept === 'management1' || $userDept === 'management2') &&
-                                        !empty($departments))
+                                        !empty($departments)): ?>
                                     <div class="d-flex gap-2 align-items-center">
                                         <label for="deptFilter" class="mb-0 fw-semibold">
                                             <i class="fas fa-filter"></i> Filter by Department:
@@ -399,18 +399,19 @@
                                         <select id="deptFilter" class="form-select form-select-sm"
                                             style="width: auto; min-width: 150px;">
                                             <option value="all"
-                                                {{ !$filterDept || $filterDept == 'all' ? 'selected' : '' }}>
+                                                <?php echo e(!$filterDept || $filterDept == 'all' ? 'selected' : ''); ?>>
                                                 All Departments
                                             </option>
-                                            @foreach ($departments as $dept)
-                                                <option value="{{ $dept }}"
-                                                    {{ $filterDept == $dept ? 'selected' : '' }}>
-                                                    {{ $dept }}
+                                            <?php $__currentLoopData = $departments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $dept): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($dept); ?>"
+                                                    <?php echo e($filterDept == $dept ? 'selected' : ''); ?>>
+                                                    <?php echo e($dept); ?>
+
                                                 </option>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
 
@@ -422,7 +423,7 @@
                                         <th class="text-center">Dept</th>
                                         <th class="text-center">Kondisi dan Persyaratan</th>
                                         <th class="text-center">Pertanyaan</th>
-                                        {{-- <th>Keterangan</th> --}}
+                                        
                                         <th class="text-center">Jawaban</th>
                                         <th class="text-center">Detail</th>
                                         <th class="text-center">Internal Audit Approval</th>
@@ -432,79 +433,75 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php $counter = 1; @endphp
-                                    @forelse ($rows as $subcriteria => $questions)
-                                        @foreach ($questions as $questionIndex => $row)
+                                    <?php $counter = 1; ?>
+                                    <?php $__empty_1 = true; $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $subcriteria => $questions): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                        <?php $__currentLoopData = $questions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $questionIndex => $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr
-                                                class="align-top {{ $questionIndex > 0 ? 'subcriteria-group-secondary' : '' }}">
-                                                <td class="text-center">{{ $counter++ }}</td>
+                                                class="align-top <?php echo e($questionIndex > 0 ? 'subcriteria-group-secondary' : ''); ?>">
+                                                <td class="text-center"><?php echo e($counter++); ?></td>
                                                 <td class="text-center">
-                                                    <span class="badge bg-primary">{{ $row->dept }}</span>
+                                                    <span class="badge bg-primary"><?php echo e($row->dept); ?></span>
                                                 </td>
                                                 <td>
-                                                    @if ($questionIndex == 0)
-                                                        <strong class="text-primary">{{ $subcriteria }}</strong>
-                                                        @if ($questions->count() > 1)
-                                                            <small class="badge bg-info ms-2">{{ $questions->count() }}
+                                                    <?php if($questionIndex == 0): ?>
+                                                        <strong class="text-primary"><?php echo e($subcriteria); ?></strong>
+                                                        <?php if($questions->count() > 1): ?>
+                                                            <small class="badge bg-info ms-2"><?php echo e($questions->count()); ?>
+
                                                                 questions</small>
-                                                        @endif
-                                                    @else
+                                                        <?php endif; ?>
+                                                    <?php else: ?>
                                                         <div class="ms-3">
                                                             <span class="subcriteria-indicator">
                                                                 <i class="fas fa-level-down-alt fa-rotate-90"></i>
-                                                                Question {{ $questionIndex + 1 }} of
-                                                                {{ $questions->count() }}
+                                                                Question <?php echo e($questionIndex + 1); ?> of
+                                                                <?php echo e($questions->count()); ?>
+
                                                             </span>
                                                         </div>
-                                                    @endif
+                                                    <?php endif; ?>
                                                 </td>
 
                                                 <td>
-                                                    <div class="mb-2">{{ $row->question }}</div>
+                                                    <div class="mb-2"><?php echo e($row->question); ?></div>
 
-                                                    @if ($row->files && count($row->files) > 0)
+                                                    <?php if($row->files && count($row->files) > 0): ?>
                                                         <div class="border-top pt-2">
                                                             <small class="text-muted d-block"><strong>Question
                                                                     Files:</strong></small>
-                                                            @foreach ($row->files as $f)
+                                                            <?php $__currentLoopData = $row->files; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $f): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                                 <div class="mb-1">
-                                                                    <a href="{{ Storage::url($f) }}" target="_blank"
+                                                                    <a href="<?php echo e(Storage::url($f)); ?>" target="_blank"
                                                                         class="btn btn-sm btn-outline-secondary">
-                                                                        <i class="fas fa-download"></i> {{ basename($f) }}
+                                                                        <i class="fas fa-download"></i> <?php echo e(basename($f)); ?>
+
                                                                     </a>
                                                                 </div>
-                                                            @endforeach
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                         </div>
-                                                    @endif
+                                                    <?php endif; ?>
                                                 </td>
-                                                {{-- <td>
-                                                @if ($row->keterangan)
-                                                    <div class="alert alert-info py-2">
-                                                        {{ $row->keterangan }}
-                                                    </div>
-                                                @else
-                                                    <span class="text-muted">No recommendations yet</span>
-                                                @endif
-                                            </td> --}}
+                                                
                                                 <td>
-                                                    @if ($row->jawaban)
+                                                    <?php if($row->jawaban): ?>
                                                         <div class="py-2">
-                                                            {{ $row->jawaban }}
+                                                            <?php echo e($row->jawaban); ?>
+
                                                         </div>
-                                                    @else
+                                                    <?php else: ?>
                                                         <span class="text-muted">-</span>
-                                                    @endif
+                                                    <?php endif; ?>
                                                 </td>
 
                                                 <!-- COLUMN: DETAIL -->
                                                 <td class="bg-light text-center">
                                                     <div class="py-3">
-                                                        <a href="{{ route('aeo.questions.documents', $row) }}"
+                                                        <a href="<?php echo e(route('aeo.questions.documents', $row)); ?>"
                                                             class="btn btn-primary btn-sm">
                                                             <i class="fas fa-eye"></i> Detail
                                                         </a>
                                                         <div class="mt-2">
-                                                            @php
+                                                            <?php
                                                                 $totalDocs = $row->documents
                                                                     ? $row->documents->count()
                                                                     : 0;
@@ -518,104 +515,106 @@
                                                                         ->where('document_type', 'new')
                                                                         ->count()
                                                                     : 0;
-                                                            @endphp
+                                                            ?>
                                                             <small class="text-muted">
-                                                                {{ $totalDocs }} documents<br>
-                                                                ({{ $masterDocs }} master documents)
+                                                                <?php echo e($totalDocs); ?> documents<br>
+                                                                (<?php echo e($masterDocs); ?> master documents)
                                                             </small>
                                                         </div>
                                                 </td>
 
                                                 <!-- COLUMN: INTERNAL AUDIT APPROVAL -->
                                                 <td class="text-center">
-                                                    @php
+                                                    <?php
                                                         $isInternalAudit = $userDept === 'internal_audit';
-                                                    @endphp
+                                                    ?>
 
-                                                    @if ($row->internal_audit_approval === true)
+                                                    <?php if($row->internal_audit_approval === true): ?>
                                                         <div class="mb-2">
                                                             <span class="badge bg-success">
                                                                 <i class="fas fa-check-circle"></i> Approved
                                                             </span>
                                                             <br>
                                                             <small class="text-muted">
-                                                                {{ $row->internal_audit_approval_at ? $row->internal_audit_approval_at->format('d/m/Y H:i') : '' }}
+                                                                <?php echo e($row->internal_audit_approval_at ? $row->internal_audit_approval_at->format('d/m/Y H:i') : ''); ?>
+
                                                             </small>
-                                                            @if ($row->internalAuditApprovalBy)
+                                                            <?php if($row->internalAuditApprovalBy): ?>
                                                                 <br><small class="text-muted">by
-                                                                    {{ $row->internalAuditApprovalBy->name }}</small>
-                                                            @endif
-                                                            @if ($row->internal_audit_approval_notes)
+                                                                    <?php echo e($row->internalAuditApprovalBy->name); ?></small>
+                                                            <?php endif; ?>
+                                                            <?php if($row->internal_audit_approval_notes): ?>
                                                                 <br><small class="text-info"><i
                                                                         class="fas fa-sticky-note"></i>
-                                                                    {{ Str::limit($row->internal_audit_approval_notes, 50) }}</small>
-                                                            @endif
-                                                            @if ($isInternalAudit)
+                                                                    <?php echo e(Str::limit($row->internal_audit_approval_notes, 50)); ?></small>
+                                                            <?php endif; ?>
+                                                            <?php if($isInternalAudit): ?>
                                                                 <br>
                                                                 <button type="button"
                                                                     class="btn btn-outline-secondary btn-sm mt-1 internal-audit-undo-btn"
-                                                                    data-question-id="{{ $row->id }}"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
                                                                     title="Undo Internal Audit Approval">
                                                                     <i class="fas fa-undo"></i> Undo
                                                                 </button>
-                                                            @endif
+                                                            <?php endif; ?>
                                                         </div>
-                                                    @elseif ($row->internal_audit_approval === false)
+                                                    <?php elseif($row->internal_audit_approval === false): ?>
                                                         <div class="mb-2">
                                                             <span class="badge bg-danger">
                                                                 <i class="fas fa-times-circle"></i> Rejected
                                                             </span>
                                                             <br>
                                                             <small class="text-muted">
-                                                                {{ $row->internal_audit_approval_at ? $row->internal_audit_approval_at->format('d/m/Y H:i') : '' }}
+                                                                <?php echo e($row->internal_audit_approval_at ? $row->internal_audit_approval_at->format('d/m/Y H:i') : ''); ?>
+
                                                             </small>
-                                                            @if ($row->internalAuditApprovalBy)
+                                                            <?php if($row->internalAuditApprovalBy): ?>
                                                                 <br><small class="text-muted">by
-                                                                    {{ $row->internalAuditApprovalBy->name }}</small>
-                                                            @endif
-                                                            @if ($row->internal_audit_approval_notes)
+                                                                    <?php echo e($row->internalAuditApprovalBy->name); ?></small>
+                                                            <?php endif; ?>
+                                                            <?php if($row->internal_audit_approval_notes): ?>
                                                                 <br><small class="text-danger"><i
                                                                         class="fas fa-sticky-note"></i>
-                                                                    {{ Str::limit($row->internal_audit_approval_notes, 50) }}</small>
-                                                            @endif
-                                                            @if ($isInternalAudit)
+                                                                    <?php echo e(Str::limit($row->internal_audit_approval_notes, 50)); ?></small>
+                                                            <?php endif; ?>
+                                                            <?php if($isInternalAudit): ?>
                                                                 <br>
                                                                 <button type="button"
                                                                     class="btn btn-outline-secondary btn-sm mt-1 internal-audit-undo-btn"
-                                                                    data-question-id="{{ $row->id }}"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
                                                                     title="Undo Internal Audit Rejection">
                                                                     <i class="fas fa-undo"></i> Undo
                                                                 </button>
-                                                            @endif
+                                                            <?php endif; ?>
                                                         </div>
-                                                    @else
-                                                        @if ($isInternalAudit)
+                                                    <?php else: ?>
+                                                        <?php if($isInternalAudit): ?>
                                                             <div class="btn-group-vertical gap-1">
                                                                 <button type="button"
                                                                     class="btn btn-success btn-sm internal-audit-btn"
-                                                                    data-question-id="{{ $row->id }}"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
                                                                     data-action="approve">
                                                                     <i class="fas fa-check"></i> Approve
                                                                 </button>
                                                                 <button type="button"
                                                                     class="btn btn-danger btn-sm internal-audit-btn"
-                                                                    data-question-id="{{ $row->id }}"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
                                                                     data-action="reject">
                                                                     <i class="fas fa-times"></i> Reject
                                                                 </button>
                                                             </div>
-                                                        @else
+                                                        <?php else: ?>
                                                             <span class="badge bg-secondary">
                                                                 <i class="fas fa-clock"></i> Pending
                                                                 <br><small class="text-muted">(Internal Audit only)</small>
                                                             </span>
-                                                        @endif
-                                                    @endif
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
                                                 </td>
 
                                                 <!-- COLUMN: FINAL VALIDASI BY AEO MGR -->
                                                 <td class="text-center">
-                                                    @php
+                                                    <?php
                                                         $hasValidatedDocs =
                                                             $row->documents
                                                                 ->where('aeo_manager_validated_at', '!=', null)
@@ -627,225 +626,228 @@
                                                             fn($doc) => $doc->aeo_manager_valid === false,
                                                         );
                                                         $canValidateAeoManager = in_array($userDept, ['AEO', 'admin']);
-                                                    @endphp
+                                                    ?>
 
-                                                    @if ($hasValidatedDocs)
-                                                        @if ($allValid)
+                                                    <?php if($hasValidatedDocs): ?>
+                                                        <?php if($allValid): ?>
                                                             <span class="badge bg-success">Sesuai</span>
-                                                            @if ($canValidateAeoManager)
+                                                            <?php if($canValidateAeoManager): ?>
                                                                 <br>
                                                                 <button type="button"
                                                                     class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
-                                                                    data-question-id="{{ $row->id }}"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
                                                                     title="Undo All AEO Manager Validations">
                                                                     <i class="fas fa-undo"></i> Undo All
                                                                 </button>
-                                                            @endif
-                                                        @elseif ($hasInvalid)
+                                                            <?php endif; ?>
+                                                        <?php elseif($hasInvalid): ?>
                                                             <span class="badge bg-danger">Tidak Sesuai</span>
-                                                            @if ($canValidateAeoManager)
+                                                            <?php if($canValidateAeoManager): ?>
                                                                 <br>
                                                                 <button type="button"
                                                                     class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
-                                                                    data-question-id="{{ $row->id }}"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
                                                                     title="Undo All AEO Manager Validations">
                                                                     <i class="fas fa-undo"></i> Undo All
                                                                 </button>
-                                                            @endif
-                                                            @if ($row->documents->where('aeo_manager_valid', false)->first()?->due_date)
+                                                            <?php endif; ?>
+                                                            <?php if($row->documents->where('aeo_manager_valid', false)->first()?->due_date): ?>
                                                                 <br><small class="text-muted">Due:
-                                                                    {{ $row->documents->where('aeo_manager_valid', false)->first()->due_date }}</small>
-                                                            @endif
-                                                        @else
+                                                                    <?php echo e($row->documents->where('aeo_manager_valid', false)->first()->due_date); ?></small>
+                                                            <?php endif; ?>
+                                                        <?php else: ?>
                                                             <span class="badge bg-warning">Partial</span>
-                                                            @if ($canValidateAeoManager)
+                                                            <?php if($canValidateAeoManager): ?>
                                                                 <br>
                                                                 <button type="button"
                                                                     class="btn btn-outline-secondary btn-sm mt-1 aeo-undo-all-btn"
-                                                                    data-question-id="{{ $row->id }}"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
                                                                     title="Undo All AEO Manager Validations">
                                                                     <i class="fas fa-undo"></i> Undo All
                                                                 </button>
-                                                            @endif
-                                                        @endif
-                                                    @else
-                                                        @if ($canValidateAeoManager)
+                                                            <?php endif; ?>
+                                                        <?php endif; ?>
+                                                    <?php else: ?>
+                                                        <?php if($canValidateAeoManager): ?>
                                                             <div class="btn-group-vertical gap-1">
                                                                 <button type="button"
                                                                     class="btn btn-success btn-sm aeo-validation-btn"
-                                                                    data-question-id="{{ $row->id }}"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
                                                                     data-status="sesuai">
                                                                     <i class="fas fa-check"></i> Sesuai
                                                                 </button>
                                                                 <button type="button"
                                                                     class="btn btn-danger btn-sm aeo-validation-btn"
-                                                                    data-question-id="{{ $row->id }}"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
                                                                     data-status="tidak_sesuai" data-bs-toggle="modal"
                                                                     data-bs-target="#aeoValidationModal">
                                                                     <i class="fas fa-times"></i> Tidak Sesuai
                                                                 </button>
                                                             </div>
-                                                        @else
+                                                        <?php else: ?>
                                                             <span class="badge bg-secondary">
                                                                 <i class="fas fa-lock"></i> AEO Access Only
                                                             </span>
-                                                        @endif
-                                                    @endif
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
                                                 </td>
 
                                                 <!-- COLUMN: APPROVAL -->
                                                 <td class="text-center">
                                                     <div class="btn-group-vertical gap-1">
-                                                        @if ($row->approval_1 === true)
+                                                        <?php if($row->approval_1 === true): ?>
                                                             <div class="mb-2">
                                                                 <span class="badge bg-success">
                                                                     <i class="fas fa-check"></i> Approval 1 ✓
                                                                 </span>
                                                                 <br>
                                                                 <small class="text-muted">
-                                                                    {{ $row->approval_1_at ? $row->approval_1_at->format('d/m/Y H:i') : '' }}
+                                                                    <?php echo e($row->approval_1_at ? $row->approval_1_at->format('d/m/Y H:i') : ''); ?>
+
                                                                 </small>
-                                                                @if ($row->approval1By)
+                                                                <?php if($row->approval1By): ?>
                                                                     <br><small class="text-muted">by
-                                                                        {{ $row->approval1By->name }}</small>
-                                                                @endif
-                                                                @if ($canApprove1)
+                                                                        <?php echo e($row->approval1By->name); ?></small>
+                                                                <?php endif; ?>
+                                                                <?php if($canApprove1): ?>
                                                                     <br>
                                                                     <button type="button"
                                                                         class="btn btn-warning btn-xs undo-approval-btn mt-1"
-                                                                        data-question-id="{{ $row->id }}"
+                                                                        data-question-id="<?php echo e($row->id); ?>"
                                                                         data-approval-type="1" title="Undo Approval 1">
                                                                         <i class="fas fa-undo"></i> Undo
                                                                     </button>
-                                                                @endif
+                                                                <?php endif; ?>
                                                             </div>
-                                                        @else
-                                                            @if ($canApprove1)
+                                                        <?php else: ?>
+                                                            <?php if($canApprove1): ?>
                                                                 <button type="button"
                                                                     class="btn btn-primary btn-sm approval-btn"
-                                                                    data-question-id="{{ $row->id }}"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
                                                                     data-approval-type="1">
                                                                     <i class="fas fa-check"></i> Approval 1
                                                                 </button>
-                                                            @else
+                                                            <?php else: ?>
                                                                 <span class="badge bg-secondary">
                                                                     <i class="fas fa-clock"></i> Pending Approval 1
                                                                     <br><small class="text-muted">(Management 1
                                                                         only)</small>
                                                                 </span>
-                                                            @endif
-                                                        @endif
+                                                            <?php endif; ?>
+                                                        <?php endif; ?>
 
-                                                        @if ($row->approval_2 === true)
+                                                        <?php if($row->approval_2 === true): ?>
                                                             <div class="mb-2">
                                                                 <span class="badge bg-success">
                                                                     <i class="fas fa-check-double"></i> Approval 2 ✓
                                                                 </span>
                                                                 <br>
                                                                 <small class="text-muted">
-                                                                    {{ $row->approval_2_at ? $row->approval_2_at->format('d/m/Y H:i') : '' }}
+                                                                    <?php echo e($row->approval_2_at ? $row->approval_2_at->format('d/m/Y H:i') : ''); ?>
+
                                                                 </small>
-                                                                @if ($row->approval2By)
+                                                                <?php if($row->approval2By): ?>
                                                                     <br><small class="text-muted">by
-                                                                        {{ $row->approval2By->name }}</small>
-                                                                @endif
-                                                                @if ($canApprove2)
+                                                                        <?php echo e($row->approval2By->name); ?></small>
+                                                                <?php endif; ?>
+                                                                <?php if($canApprove2): ?>
                                                                     <br>
                                                                     <button type="button"
                                                                         class="btn btn-warning btn-xs undo-approval-btn mt-1"
-                                                                        data-question-id="{{ $row->id }}"
+                                                                        data-question-id="<?php echo e($row->id); ?>"
                                                                         data-approval-type="2" title="Undo Approval 2">
                                                                         <i class="fas fa-undo"></i> Undo
                                                                     </button>
-                                                                @endif
+                                                                <?php endif; ?>
                                                             </div>
-                                                        @elseif ($row->approval_1 === true)
-                                                            @if ($canApprove2)
+                                                        <?php elseif($row->approval_1 === true): ?>
+                                                            <?php if($canApprove2): ?>
                                                                 <button type="button"
                                                                     class="btn btn-success btn-sm approval-btn"
-                                                                    data-question-id="{{ $row->id }}"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
                                                                     data-approval-type="2">
                                                                     <i class="fas fa-check-double"></i> Approval 2
                                                                 </button>
-                                                            @else
+                                                            <?php else: ?>
                                                                 <span class="badge bg-secondary">
                                                                     <i class="fas fa-clock"></i> Pending Approval 2
                                                                     <br><small class="text-muted">(Management 2
                                                                         only)</small>
                                                                 </span>
-                                                            @endif
-                                                        @else
-                                                            @if ($canApprove2)
+                                                            <?php endif; ?>
+                                                        <?php else: ?>
+                                                            <?php if($canApprove2): ?>
                                                                 <button type="button" class="btn btn-secondary btn-sm"
                                                                     disabled title="Complete Approval 1 first">
                                                                     <i class="fas fa-check-double"></i> Approval 2
                                                                 </button>
-                                                            @else
+                                                            <?php else: ?>
                                                                 <span class="badge bg-light text-muted">
                                                                     <i class="fas fa-minus"></i> Awaiting Approval 1
                                                                 </span>
-                                                            @endif
-                                                        @endif
+                                                            <?php endif; ?>
+                                                        <?php endif; ?>
                                                     </div>
                                                 </td>
 
                                                 <!-- COLUMN: AKSI -->
                                                 <td class="text-center">
-                                                    @php
+                                                    <?php
                                                         // AEO and admin can edit/delete any question
                                                         // Other users can only edit/delete questions from their department
                                                         // Internal audit cannot edit/delete any questions
                                                         $canEditDelete =
                                                             ($isAeoOrAdmin || $row->dept === $userDept) &&
                                                             $userDept !== 'internal_audit';
-                                                    @endphp
+                                                    ?>
 
                                                     <div class="btn-group-vertical" role="group">
-                                                        @if ($canEditDelete)
-                                                            <a href="{{ route('aeo.questions.edit', $row) }}"
+                                                        <?php if($canEditDelete): ?>
+                                                            <a href="<?php echo e(route('aeo.questions.edit', $row)); ?>"
                                                                 class="btn btn-sm btn-warning" title="Edit Question">
                                                                 <i class="fas fa-edit"></i> Edit
                                                             </a>
-                                                            <form action="{{ route('aeo.questions.destroy', $row) }}"
+                                                            <form action="<?php echo e(route('aeo.questions.destroy', $row)); ?>"
                                                                 method="POST" class="d-inline">
-                                                                @csrf @method('DELETE')
+                                                                <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
                                                                 <button type="submit"
                                                                     onclick="return confirm('Delete this question and all related documents?')"
                                                                     class="btn btn-sm btn-danger" title="Delete Question">
                                                                     <i class="fas fa-trash"></i> Delete
                                                                 </button>
                                                             </form>
-                                                        @else
+                                                        <?php else: ?>
                                                             <button type="button" class="btn btn-sm btn-secondary"
                                                                 disabled
-                                                                title="{{ $userDept === 'internal_audit' ? 'Internal Audit can only view questions' : 'You can only edit/delete questions from your department' }}">
+                                                                title="<?php echo e($userDept === 'internal_audit' ? 'Internal Audit can only view questions' : 'You can only edit/delete questions from your department'); ?>">
                                                                 <i class="fas fa-lock"></i>
-                                                                {{ $userDept === 'internal_audit' ? 'View Only' : 'Locked' }}
+                                                                <?php echo e($userDept === 'internal_audit' ? 'View Only' : 'Locked'); ?>
+
                                                             </button>
-                                                        @endif
+                                                        <?php endif; ?>
                                                     </div>
                                                 </td>
                                             </tr>
-                                        @endforeach
-                                    @empty
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <tr>
                                             <td colspan="10" class="text-center py-4">
                                                 <div class="text-muted">
                                                     <i class="fas fa-inbox fa-2x mb-2"></i><br>
-                                                    @if ($isAeoOrAdmin)
+                                                    <?php if($isAeoOrAdmin): ?>
                                                         No questions found in the system.
-                                                    @else
-                                                        No questions found for your department ({{ $userDept }}).
-                                                    @endif
+                                                    <?php else: ?>
+                                                        No questions found for your department (<?php echo e($userDept); ?>).
+                                                    <?php endif; ?>
                                                     <br>
-                                                    <a href="{{ route('aeo.questions.create') }}"
+                                                    <a href="<?php echo e(route('aeo.questions.create')); ?>"
                                                         class="btn btn-primary mt-2">
                                                         <i class="fas fa-plus"></i> Add your first question
                                                     </a>
                                                 </div>
                                             </td>
                                         </tr>
-                                    @endforelse
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -868,7 +870,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="aeoValidationForm">
-                    @csrf
+                    <?php echo csrf_field(); ?>
                     <div class="modal-body">
                         <input type="hidden" id="questionId" name="question_id">
                         <input type="hidden" name="validation_status" value="tidak_sesuai">
@@ -887,7 +889,7 @@
                                 <i class="fas fa-calendar-alt"></i> Tanggal Jatuh Tempo <span class="text-danger">*</span>
                             </label>
                             <input type="date" class="form-control" id="dueDate" name="due_date"
-                                min="{{ date('Y-m-d', strtotime('+1 day')) }}" required>
+                                min="<?php echo e(date('Y-m-d', strtotime('+1 day'))); ?>" required>
                             <div class="form-text">Tentukan batas waktu untuk perbaikan dokumen.</div>
                         </div>
                     </div>
@@ -916,7 +918,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="approvalForm">
-                    @csrf
+                    <?php echo csrf_field(); ?>
                     <div class="modal-body">
                         <input type="hidden" id="approvalQuestionId" name="question_id">
                         <input type="hidden" id="approvalType" name="approval_type">
@@ -961,7 +963,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="internalAuditForm">
-                    @csrf
+                    <?php echo csrf_field(); ?>
                     <div class="modal-body">
                         <input type="hidden" id="internalAuditQuestionId" name="question_id">
                         <input type="hidden" id="internalAuditAction" name="action">
@@ -993,9 +995,9 @@
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
     <style>
         /* Department Filter Styling */
         #deptFilter {
@@ -1159,9 +1161,9 @@
             background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
         }
     </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script>
         $(document).ready(function() {
             $('#aeoQuestionsTable').DataTable({
@@ -1229,7 +1231,7 @@
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4]
                         },
-                        title: 'AEO Questions - {{ now()->format('d-m-Y') }}'
+                        title: 'AEO Questions - <?php echo e(now()->format('d-m-Y')); ?>'
                     },
                     {
                         extend: 'pdf',
@@ -1317,7 +1319,7 @@
 
             // Function to handle AEO validation
             function handleAeoValidation(questionId, status, notes, dueDate) {
-                const route = `{{ route('aeo.questions.aeo-manager-validation', ':id') }}`.replace(':id',
+                const route = `<?php echo e(route('aeo.questions.aeo-manager-validation', ':id')); ?>`.replace(':id',
                     questionId);
 
                 // Create form data
@@ -1875,4 +1877,6 @@
             });
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\aeo-docs\resources\views/aeo/questions/index.blade.php ENDPATH**/ ?>

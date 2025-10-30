@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <title>AEO Docs</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,14 +13,14 @@
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css" rel="stylesheet">
-    @stack('styles')
+    <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 
 <body class="bg-light">
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('dashboard') }}">
+            <a class="navbar-brand" href="<?php echo e(route('dashboard')); ?>">
                 <i class="fas fa-file-alt"></i> AEO Docs
             </a>
 
@@ -31,14 +31,14 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
-                            href="{{ route('dashboard') }}">
+                        <a class="nav-link <?php echo e(request()->routeIs('dashboard') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('dashboard')); ?>">
                             <i class="fas fa-chart-line"></i> Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('aeo.questions.*') ? 'active' : '' }}"
-                            href="{{ route('aeo.questions.index') }}">
+                        <a class="nav-link <?php echo e(request()->routeIs('aeo.questions.*') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('aeo.questions.index')); ?>">
                             <i class="fas fa-question-circle"></i> Questions
                         </a>
                     </li>
@@ -47,12 +47,13 @@
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user"></i> {{ auth()->user()->name ?? 'User' }}
+                            <i class="fas fa-user"></i> <?php echo e(auth()->user()->name ?? 'User'); ?>
+
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                                    @csrf
+                                <form method="POST" action="<?php echo e(route('logout')); ?>" class="d-inline">
+                                    <?php echo csrf_field(); ?>
                                     <button class="dropdown-item" type="submit">
                                         <i class="fas fa-sign-out-alt"></i> Logout
                                     </button>
@@ -67,30 +68,31 @@
 
     <!-- Main Content -->
     <main class="py-4">
-        @if (session('success') || session('ok'))
+        <?php if(session('success') || session('ok')): ?>
             <div class="container">
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle"></i> {{ session('success') ?? session('ok') }}
+                    <i class="fas fa-check-circle"></i> <?php echo e(session('success') ?? session('ok')); ?>
+
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             </div>
-        @endif
+        <?php endif; ?>
 
-        @if ($errors->any())
+        <?php if($errors->any()): ?>
             <div class="container">
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <i class="fas fa-exclamation-triangle"></i> Please fix the following errors:
                     <ul class="mb-0 mt-2">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li><?php echo e($error); ?></li>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             </div>
-        @endif
+        <?php endif; ?>
 
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
     </main>
 
     <!-- jQuery (required for DataTables) -->
@@ -108,7 +110,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-    @stack('scripts')
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 
 </html>
+<?php /**PATH C:\laragon\www\aeo-docs\resources\views/layouts/app.blade.php ENDPATH**/ ?>

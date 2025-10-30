@@ -3,15 +3,19 @@
 use App\Http\Controllers\AeoDocumentController;
 use App\Http\Controllers\AeoQuestionController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => redirect()->route('aeo.questions.index'));
+Route::get('/', fn () => redirect()->route('dashboard'));
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
     Route::resource('aeo/questions', AeoQuestionController::class)->except(['show'])->names('aeo.questions');
 
     // Question detail page for documents
@@ -28,6 +32,12 @@ Route::middleware('auth')->group(function () {
 
     // Internal Audit Approval route
     Route::post('aeo/questions/{question}/internal-audit-approval', [AeoQuestionController::class, 'processInternalAuditApproval'])->name('aeo.questions.internal-audit-approval');
+
+    // Internal Audit Undo route
+    Route::post('aeo/questions/{question}/internal-audit-undo', [AeoQuestionController::class, 'undoInternalAuditApproval'])->name('aeo.questions.internal-audit-undo');
+
+    // Undo Approval route
+    Route::post('aeo/questions/{question}/undo-approval', [AeoQuestionController::class, 'undoApproval'])->name('aeo.questions.undo-approval');
 
     // Excel import routes for questions
     Route::get('aeo/questions/import', [AeoQuestionController::class, 'importForm'])->name('aeo.questions.import.form');

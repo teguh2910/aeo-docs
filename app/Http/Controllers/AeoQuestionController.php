@@ -15,13 +15,14 @@ class AeoQuestionController extends Controller
         $userDept = auth()->user()->dept ?? 'GENERAL';
         $isAeoOrAdmin = in_array($userDept, ['AEO', 'admin']);
         $isInternalAudit = $userDept === 'internal_audit';
+        $isManagement = in_array($userDept, ['management1', 'management2']);
 
         // Get filter parameter
         $filterDept = $request->get('dept');
 
-        // Get all unique departments for filter dropdown (only for AEO/admin/internal_audit)
+        // Get all unique departments for filter dropdown (only for AEO/admin/internal_audit/management)
         $departments = [];
-        if ($isAeoOrAdmin || $isInternalAudit) {
+        if ($isAeoOrAdmin || $isInternalAudit || $isManagement) {
             $departments = AeoQuestion::select('dept')
                 ->distinct()
                 ->whereNotNull('dept')
@@ -34,22 +35,22 @@ class AeoQuestionController extends Controller
         $query = AeoQuestion::query();
 
         // Apply department filter based on user role
-        if (! $isAeoOrAdmin && ! $isInternalAudit) {
+        if (! $isAeoOrAdmin && ! $isInternalAudit && ! $isManagement) {
             // Regular users can only see their department
             $query->where('dept', $userDept);
         } elseif ($filterDept && $filterDept !== 'all') {
-            // AEO/admin/internal_audit can filter by specific department
+            // AEO/admin/internal_audit/management can filter by specific department
             $query->where('dept', $filterDept);
         }
-        // If no filter or 'all' is selected, AEO/admin/internal_audit see everything
+        // If no filter or 'all' is selected, AEO/admin/internal_audit/management see everything
 
         $rows = $query->with([
-            'documents' => function ($query) use ($userDept, $isAeoOrAdmin, $isInternalAudit, $filterDept) {
+            'documents' => function ($query) use ($userDept, $isAeoOrAdmin, $isInternalAudit, $isManagement, $filterDept) {
                 // For regular users, show only their dept documents
-                if (! $isAeoOrAdmin && ! $isInternalAudit) {
+                if (! $isAeoOrAdmin && ! $isInternalAudit && ! $isManagement) {
                     $query->where('dept', $userDept);
                 } elseif ($filterDept && $filterDept !== 'all') {
-                    // For AEO/admin/internal_audit with filter, show filtered dept documents
+                    // For AEO/admin/internal_audit/management with filter, show filtered dept documents
                     $query->where('dept', $filterDept);
                 }
                 // Otherwise show all documents
@@ -73,16 +74,16 @@ class AeoQuestionController extends Controller
         $userDept = auth()->user()->dept ?? 'GENERAL';
 
         // Check if user can access this question
-        // AEO and admin can access any question, others only their department's questions
-        if (! in_array($userDept, ['AEO', 'admin']) && $question->dept !== $userDept) {
+        // AEO, admin, internal_audit, and management can access any question, others only their department's questions
+        if (! in_array($userDept, ['AEO', 'admin', 'internal_audit', 'management1', 'management2']) && $question->dept !== $userDept) {
             abort(403, 'You can only access questions from your department.');
         }
 
         // Load documents
         $question->load([
             'documents' => function ($query) use ($userDept) {
-                // For AEO and admin, show all documents; for others, show only their dept documents
-                if (! in_array($userDept, ['AEO', 'admin'])) {
+                // For AEO, admin, internal_audit, and management, show all documents; for others, show only their dept documents
+                if (! in_array($userDept, ['AEO', 'admin', 'internal_audit', 'management1', 'management2'])) {
                     $query->where('dept', $userDept);
                 }
             },
@@ -96,11 +97,25 @@ class AeoQuestionController extends Controller
 
     public function create()
     {
+        $userDept = auth()->user()->dept ?? 'GENERAL';
+
+        // Internal audit cannot create questions
+        if ($userDept === 'internal_audit') {
+            abort(403, 'Internal Audit users cannot create questions.');
+        }
+
         return view('aeo.questions.create');
     }
 
     public function store(Request $r)
     {
+        $userDept = auth()->user()->dept ?? 'GENERAL';
+
+        // Internal audit cannot create questions
+        if ($userDept === 'internal_audit') {
+            abort(403, 'Internal Audit users cannot create questions.');
+        }
+
         $data = $r->validate([
             'subcriteria' => 'required|string|max:255',
             'question' => 'required|string',
@@ -129,6 +144,11 @@ class AeoQuestionController extends Controller
     {
         $userDept = auth()->user()->dept ?? 'GENERAL';
 
+        // Internal audit cannot edit questions
+        if ($userDept === 'internal_audit') {
+            abort(403, 'Internal Audit users cannot edit questions.');
+        }
+
         // AEO and admin can edit any question, others can only edit their department's questions
         if (! in_array($userDept, ['AEO', 'admin']) && $question->dept !== $userDept) {
             abort(403, 'You can only edit questions from your department.');
@@ -140,6 +160,11 @@ class AeoQuestionController extends Controller
     public function update(Request $r, AeoQuestion $question)
     {
         $userDept = auth()->user()->dept ?? 'GENERAL';
+
+        // Internal audit cannot update questions
+        if ($userDept === 'internal_audit') {
+            abort(403, 'Internal Audit users cannot update questions.');
+        }
 
         // AEO and admin can update any question, others can only update their department's questions
         if (! in_array($userDept, ['AEO', 'admin']) && $question->dept !== $userDept) {
@@ -171,6 +196,11 @@ class AeoQuestionController extends Controller
     {
         $userDept = auth()->user()->dept ?? 'GENERAL';
 
+        // Internal audit cannot delete questions
+        if ($userDept === 'internal_audit') {
+            abort(403, 'Internal Audit users cannot delete questions.');
+        }
+
         // AEO and admin can delete any question, others can only delete their department's questions
         if (! in_array($userDept, ['AEO', 'admin']) && $question->dept !== $userDept) {
             abort(403, 'You can only delete questions from your department.');
@@ -200,11 +230,25 @@ class AeoQuestionController extends Controller
 
     public function importForm()
     {
+        $userDept = auth()->user()->dept ?? 'GENERAL';
+
+        // Internal audit cannot import questions
+        if ($userDept === 'internal_audit') {
+            abort(403, 'Internal Audit users cannot import questions.');
+        }
+
         return view('aeo.questions.import');
     }
 
     public function importExcel(Request $request)
     {
+        $userDept = auth()->user()->dept ?? 'GENERAL';
+
+        // Internal audit cannot import questions
+        if ($userDept === 'internal_audit') {
+            abort(403, 'Internal Audit users cannot import questions.');
+        }
+
         $request->validate([
             'excel_file' => 'required|file|mimes:xlsx,xls,csv|max:10240', // 10MB max
         ]);
@@ -312,13 +356,6 @@ class AeoQuestionController extends Controller
     {
         $userDept = auth()->user()->dept ?? 'GENERAL';
 
-        // Only admin can process approvals
-        if ($userDept !== 'admin') {
-            abort(403, 'Only administrators can process approvals.');
-        }
-
-        // Admin users can approve questions from any department
-
         $request->validate([
             'approval_type' => 'required|in:1,2',
             'notes' => 'nullable|string|max:1000',
@@ -326,6 +363,19 @@ class AeoQuestionController extends Controller
 
         $approvalType = $request->approval_type;
         $notes = $request->notes;
+
+        // Check permission based on approval type
+        if ($approvalType == 1) {
+            // Only management1 and admin can process Approval 1
+            if (! in_array($userDept, ['management1', 'admin'])) {
+                abort(403, 'Only Management 1 or Admin can process Approval 1.');
+            }
+        } elseif ($approvalType == 2) {
+            // Only management2 and admin can process Approval 2
+            if (! in_array($userDept, ['management2', 'admin'])) {
+                abort(403, 'Only Management 2 or Admin can process Approval 2.');
+            }
+        }
 
         // Check if this approval has already been processed
         $approvalField = 'approval_'.$approvalType;
@@ -411,6 +461,97 @@ class AeoQuestionController extends Controller
                 'action' => $action,
                 'approved_at' => $question->internal_audit_approval_at,
                 'approved_by' => auth()->user()->name ?? 'Unknown User',
+            ]);
+        }
+
+        return redirect()->route('aeo.questions.index')->with('success', $message);
+    }
+
+    public function undoInternalAuditApproval(Request $request, AeoQuestion $question)
+    {
+        $userDept = auth()->user()->dept ?? 'GENERAL';
+
+        // Only internal_audit dept can undo internal audit approvals
+        if ($userDept !== 'internal_audit') {
+            abort(403, 'Only Internal Audit department can undo internal audit approvals.');
+        }
+
+        // Check if there is an approval to undo
+        if ($question->internal_audit_approval === null) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No Internal Audit Approval to undo for this question.',
+            ], 422);
+        }
+
+        // Reset the internal audit approval fields
+        $question->update([
+            'internal_audit_approval' => null,
+            'internal_audit_approval_at' => null,
+            'internal_audit_approval_by' => null,
+            'internal_audit_approval_notes' => null,
+        ]);
+
+        $message = 'Internal Audit Approval undone successfully for question: '.$question->question;
+
+        // Handle AJAX requests
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+            ]);
+        }
+
+        return redirect()->route('aeo.questions.index')->with('success', $message);
+    }
+
+    public function undoApproval(Request $request, AeoQuestion $question)
+    {
+        $userDept = auth()->user()->dept ?? 'GENERAL';
+
+        $request->validate([
+            'approval_type' => 'required|in:1,2',
+        ]);
+
+        $approvalType = $request->approval_type;
+
+        // Check permission based on approval type
+        if ($approvalType == 1) {
+            // Only management1 and admin can undo Approval 1
+            if (! in_array($userDept, ['management1', 'admin'])) {
+                abort(403, 'Only Management 1 or Admin can undo Approval 1.');
+            }
+        } elseif ($approvalType == 2) {
+            // Only management2 and admin can undo Approval 2
+            if (! in_array($userDept, ['management2', 'admin'])) {
+                abort(403, 'Only Management 2 or Admin can undo Approval 2.');
+            }
+        }
+
+        // Check if there is an approval to undo
+        $approvalField = 'approval_'.$approvalType;
+        if ($question->$approvalField === null) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No Approval '.$approvalType.' to undo for this question.',
+            ], 422);
+        }
+
+        // Reset the approval fields
+        $question->update([
+            'approval_'.$approvalType => null,
+            'approval_'.$approvalType.'_at' => null,
+            'approval_'.$approvalType.'_by' => null,
+            'approval_'.$approvalType.'_notes' => null,
+        ]);
+
+        $message = 'Approval '.$approvalType.' undone successfully for question: '.$question->question;
+
+        // Handle AJAX requests
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
             ]);
         }
 

@@ -447,116 +447,128 @@
                             </div>
                         </div>
 
-                        <!-- Add Document Section -->
-                        <div class="row mt-4">
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="mb-0">
-                                            <i class="fas fa-plus"></i> Add New Document
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <!-- Add Master Document -->
-                                            <div class="col-md-6">
-                                                <div class="card border-primary">
-                                                    <div class="card-header bg-primary text-white">
-                                                        <h6 class="mb-0">Add Master Document</h6>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <form action="{{ route('aeo.documents.store') }}" method="POST"
-                                                            enctype="multipart/form-data">
-                                                            @csrf
-                                                            <input type="hidden" name="aeo_question_id"
-                                                                value="{{ $question->id }}">
-                                                            <input type="hidden" name="document_type" value="master">
+                        @php
+                            $userDept = auth()->user()->dept ?? 'GENERAL';
+                        @endphp
 
-                                                            <div class="mb-3">
-                                                                <label for="nama_dokumen_master"
-                                                                    class="form-label">Document Name</label>
-                                                                <input type="text" name="nama_dokumen"
-                                                                    id="nama_dokumen_master" class="form-control"
-                                                                    required>
-                                                            </div>
+                        @if (!in_array($userDept, ['internal_audit', 'AEO', 'management1', 'management2']))
+                            <!-- Add Document Section -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">
+                                                <i class="fas fa-plus"></i> Add New Document
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <!-- Add Master Document -->
+                                                <div class="col-md-6">
+                                                    <div class="card border-primary">
+                                                        <div class="card-header bg-primary text-white">
+                                                            <h6 class="mb-0">Add Master Document</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <form action="{{ route('aeo.documents.store') }}"
+                                                                method="POST" enctype="multipart/form-data">
+                                                                @csrf
+                                                                <input type="hidden" name="aeo_question_id"
+                                                                    value="{{ $question->id }}">
+                                                                <input type="hidden" name="document_type"
+                                                                    value="master">
 
-                                                            <div class="mb-3">
-                                                                <label for="dept_master"
-                                                                    class="form-label">Department</label>
-                                                                <input type="text" name="dept" id="dept_master"
-                                                                    class="form-control"
-                                                                    value="{{ auth()->user()->dept ?? 'GENERAL' }}"
-                                                                    readonly style="background-color: #f8f9fa;">
-                                                            </div>
+                                                                <div class="mb-3">
+                                                                    <label for="nama_dokumen_master"
+                                                                        class="form-label">Document Name</label>
+                                                                    <input type="text" name="nama_dokumen"
+                                                                        id="nama_dokumen_master" class="form-control"
+                                                                        required>
+                                                                </div>
 
-                                                            <div class="mb-3">
-                                                                <label for="no_sop_master" class="form-label">No
-                                                                    SOP/WI/STD/Form/Other</label>
-                                                                <input type="text" name="no_sop_wi_std_form_other"
-                                                                    id="no_sop_master" class="form-control">
-                                                            </div>
+                                                                <div class="mb-3">
+                                                                    <label for="dept_master"
+                                                                        class="form-label">Department</label>
+                                                                    <input type="text" name="dept" id="dept_master"
+                                                                        class="form-control"
+                                                                        value="{{ auth()->user()->dept ?? 'GENERAL' }}"
+                                                                        readonly style="background-color: #f8f9fa;">
+                                                                </div>
 
-                                                            <div class="mb-3">
-                                                                <label for="files_master" class="form-label">Files</label>
-                                                                <input type="file" name="files[]" id="files_master"
-                                                                    class="form-control" multiple>
-                                                            </div>
+                                                                <div class="mb-3">
+                                                                    <label for="no_sop_master" class="form-label">No
+                                                                        SOP/WI/STD/Form/Other</label>
+                                                                    <input type="text" name="no_sop_wi_std_form_other"
+                                                                        id="no_sop_master" class="form-control">
+                                                                </div>
 
-                                                            <button type="submit" class="btn btn-primary">
-                                                                <i class="fas fa-save"></i> Add Master Document
-                                                            </button>
-                                                        </form>
+                                                                <div class="mb-3">
+                                                                    <label for="files_master"
+                                                                        class="form-label">Files</label>
+                                                                    <input type="file" name="files[]"
+                                                                        id="files_master" class="form-control" multiple>
+                                                                </div>
+
+                                                                <button type="submit" class="btn btn-primary">
+                                                                    <i class="fas fa-save"></i> Add Master Document
+                                                                </button>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            <!-- Add New Document -->
-                                            <div class="col-md-6">
-                                                <div class="card border-success">
-                                                    <div class="card-header bg-success text-white">
-                                                        <h6 class="mb-0">Add New Document</h6>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <form action="{{ route('aeo.documents.store') }}" method="POST"
-                                                            enctype="multipart/form-data">
-                                                            @csrf
-                                                            <input type="hidden" name="aeo_question_id"
-                                                                value="{{ $question->id }}">
-                                                            <input type="hidden" name="document_type" value="new">
+                                                <!-- Add New Document -->
+                                                <div class="col-md-6">
+                                                    <div class="card border-success">
+                                                        <div class="card-header bg-success text-white">
+                                                            <h6 class="mb-0">Add New Document</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <form action="{{ route('aeo.documents.store') }}"
+                                                                method="POST" enctype="multipart/form-data">
+                                                                @csrf
+                                                                <input type="hidden" name="aeo_question_id"
+                                                                    value="{{ $question->id }}">
+                                                                <input type="hidden" name="document_type"
+                                                                    value="new">
 
-                                                            <div class="mb-3">
-                                                                <label for="nama_dokumen_new" class="form-label">Document
-                                                                    Name</label>
-                                                                <input type="text" name="nama_dokumen"
-                                                                    id="nama_dokumen_new" class="form-control" required>
-                                                            </div>
+                                                                <div class="mb-3">
+                                                                    <label for="nama_dokumen_new"
+                                                                        class="form-label">Document
+                                                                        Name</label>
+                                                                    <input type="text" name="nama_dokumen"
+                                                                        id="nama_dokumen_new" class="form-control"
+                                                                        required>
+                                                                </div>
 
-                                                            <div class="mb-3">
-                                                                <label for="dept_new"
-                                                                    class="form-label">Department</label>
-                                                                <input type="text" name="dept" id="dept_new"
-                                                                    class="form-control"
-                                                                    value="{{ auth()->user()->dept ?? 'GENERAL' }}"
-                                                                    readonly style="background-color: #f8f9fa;">
-                                                            </div>
+                                                                <div class="mb-3">
+                                                                    <label for="dept_new"
+                                                                        class="form-label">Department</label>
+                                                                    <input type="text" name="dept" id="dept_new"
+                                                                        class="form-control"
+                                                                        value="{{ auth()->user()->dept ?? 'GENERAL' }}"
+                                                                        readonly style="background-color: #f8f9fa;">
+                                                                </div>
 
-                                                            <div class="mb-3">
-                                                                <label for="no_sop_new" class="form-label">No
-                                                                    SOP/WI/STD/Form/Other</label>
-                                                                <input type="text" name="no_sop_wi_std_form_other"
-                                                                    id="no_sop_new" class="form-control">
-                                                            </div>
+                                                                <div class="mb-3">
+                                                                    <label for="no_sop_new" class="form-label">No
+                                                                        SOP/WI/STD/Form/Other</label>
+                                                                    <input type="text" name="no_sop_wi_std_form_other"
+                                                                        id="no_sop_new" class="form-control">
+                                                                </div>
 
-                                                            <div class="mb-3">
-                                                                <label for="files_new" class="form-label">Files</label>
-                                                                <input type="file" name="files[]" id="files_new"
-                                                                    class="form-control" multiple>
-                                                            </div>
+                                                                <div class="mb-3">
+                                                                    <label for="files_new"
+                                                                        class="form-label">Files</label>
+                                                                    <input type="file" name="files[]" id="files_new"
+                                                                        class="form-control" multiple>
+                                                                </div>
 
-                                                            <button type="submit" class="btn btn-success">
-                                                                <i class="fas fa-save"></i> Add New Document
-                                                            </button>
-                                                        </form>
+                                                                <button type="submit" class="btn btn-success">
+                                                                    <i class="fas fa-save"></i> Add New Document
+                                                                </button>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -564,7 +576,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
                     </div>
 
                     @push('scripts')

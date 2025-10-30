@@ -57,15 +57,8 @@
         }
 
         @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
 
         .login-container {
@@ -239,7 +232,7 @@
             .login-body {
                 padding: 30px 25px 25px;
             }
-
+            
             .login-header {
                 padding: 35px 25px 30px;
             }
@@ -257,22 +250,41 @@
                 <h4>AEO Documents</h4>
                 <p>Welcome back! Please login to continue</p>
             </div>
-
+            
             <div class="login-body">
-                <form method="POST" action="{{ route('login.attempt') }}">
-                    @csrf
+                <form method="POST" action="<?php echo e(route('login.attempt')); ?>">
+                    <?php echo csrf_field(); ?>
 
                     <div class="input-group-custom">
                         <label for="email" class="form-label">
                             <i class="fas fa-envelope"></i>
                             Email Address
                         </label>
-                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
-                            name="email" value="{{ old('email') }}" placeholder="Enter your email" required
-                            autofocus>
-                        @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <input type="email" 
+                               class="form-control <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                               id="email" 
+                               name="email" 
+                               value="<?php echo e(old('email')); ?>" 
+                               placeholder="Enter your email"
+                               required 
+                               autofocus>
+                        <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <div class="input-group-custom">
@@ -280,11 +292,29 @@
                             <i class="fas fa-lock"></i>
                             Password
                         </label>
-                        <input type="password" class="form-control @error('password') is-invalid @enderror"
-                            id="password" name="password" placeholder="Enter your password" required>
-                        @error('password')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <input type="password" 
+                               class="form-control <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                               id="password" 
+                               name="password"
+                               placeholder="Enter your password"
+                               required>
+                        <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <div class="d-grid">
@@ -295,9 +325,9 @@
                     </div>
                 </form>
             </div>
-
+            
             <div class="login-footer">
-                <small>&copy; {{ date('Y') }} AEO Document Management System</small>
+                <small>&copy; <?php echo e(date('Y')); ?> AEO Document Management System</small>
             </div>
         </div>
     </div>
@@ -307,3 +337,4 @@
 </body>
 
 </html>
+<?php /**PATH C:\laragon\www\aeo-docs\resources\views/auth/login.blade.php ENDPATH**/ ?>

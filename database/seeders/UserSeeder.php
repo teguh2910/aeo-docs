@@ -106,6 +106,27 @@ class UserSeeder extends Seeder
             'dept' => 'MTE',
             'email_verified_at' => now(),
         ]);
+        User::create([
+            'name' => 'Internal Audit User',
+            'email' => 'internal_audit@aii.com',
+            'password' => Hash::make('password123'),
+            'dept' => 'internal_audit',
+            'email_verified_at' => now(),
+        ]);
+        User::create([
+            'name' => 'Management 1 User',
+            'email' => 'management1@aii.com',
+            'password' => Hash::make('password123'),
+            'dept' => 'management1',
+            'email_verified_at' => now(),
+        ]);
+        User::create([
+            'name' => 'Management 2 User',
+            'email' => 'management2@aii.com',
+            'password' => Hash::make('password123'),
+            'dept' => 'management2',
+            'email_verified_at' => now(),
+        ]);
 
     }
 }
