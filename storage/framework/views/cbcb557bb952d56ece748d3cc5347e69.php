@@ -309,6 +309,22 @@
                                         <strong><?php echo e($userDept); ?></strong> | Logged
                                         in as: <strong><?php echo e(auth()->user()->name); ?></strong></small>
                                 </div>
+                            <?php elseif($userDept === 'internal_audit'): ?>
+                                <div class="alert alert-primary">
+                                    <i class="fas fa-clipboard-check"></i>
+                                    <strong>Internal Audit Access:</strong> You have internal audit approval permissions:
+                                    <ul class="mb-0 mt-2">
+                                        <li>View questions from <strong>all departments</strong></li>
+                                        <li><strong>Approve or Reject questions (Internal Audit)</strong></li>
+                                        <li>View all documents and validations</li>
+                                        <li class="text-muted"><s>Edit/delete questions</s> (Department/AEO/Admin only)</li>
+                                        <li class="text-muted"><s>Validate documents</s> (AEO/Admin only)</li>
+                                        <li class="text-muted"><s>Process approvals 1 & 2</s> (Admin only)</li>
+                                    </ul>
+                                    <small class="text-muted mt-2 d-block">Your Department:
+                                        <strong><?php echo e($userDept); ?></strong> | Logged
+                                        in as: <strong><?php echo e(auth()->user()->name); ?></strong></small>
+                                </div>
                             <?php else: ?>
                                 <div class="alert alert-warning">
                                     <i class="fas fa-info-circle"></i>
@@ -337,7 +353,7 @@
                                     </a>
                                 </div>
 
-                                <?php if($isAeoOrAdmin && !empty($departments)): ?>
+                                <?php if(($isAeoOrAdmin || $userDept === 'internal_audit') && !empty($departments)): ?>
                                     <div class="d-flex gap-2 align-items-center">
                                         <label for="deptFilter" class="mb-0 fw-semibold">
                                             <i class="fas fa-filter"></i> Filter by Department:
@@ -372,6 +388,7 @@
                                         
                                         <th class="text-center">Jawaban</th>
                                         <th class="text-center">Detail</th>
+                                        <th class="text-center">Internal Audit Approval</th>
                                         <th class="text-center">Final Validasi by AEO Mgr</th>
                                         <th class="text-center">Approval</th>
                                         <th class="text-center">Aksi</th>
@@ -466,6 +483,77 @@
                                                                 (<?php echo e($masterDocs); ?> master documents)
                                                             </small>
                                                         </div>
+                                                </td>
+
+                                                <!-- COLUMN: INTERNAL AUDIT APPROVAL -->
+                                                <td class="text-center">
+                                                    <?php
+                                                        $isInternalAudit = $userDept === 'internal_audit';
+                                                    ?>
+
+                                                    <?php if($row->internal_audit_approval === true): ?>
+                                                        <div class="mb-2">
+                                                            <span class="badge bg-success">
+                                                                <i class="fas fa-check-circle"></i> Approved
+                                                            </span>
+                                                            <br>
+                                                            <small class="text-muted">
+                                                                <?php echo e($row->internal_audit_approval_at ? $row->internal_audit_approval_at->format('d/m/Y H:i') : ''); ?>
+
+                                                            </small>
+                                                            <?php if($row->internalAuditApprovalBy): ?>
+                                                                <br><small class="text-muted">by
+                                                                    <?php echo e($row->internalAuditApprovalBy->name); ?></small>
+                                                            <?php endif; ?>
+                                                            <?php if($row->internal_audit_approval_notes): ?>
+                                                                <br><small class="text-info"><i
+                                                                        class="fas fa-sticky-note"></i>
+                                                                    <?php echo e(Str::limit($row->internal_audit_approval_notes, 50)); ?></small>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    <?php elseif($row->internal_audit_approval === false): ?>
+                                                        <div class="mb-2">
+                                                            <span class="badge bg-danger">
+                                                                <i class="fas fa-times-circle"></i> Rejected
+                                                            </span>
+                                                            <br>
+                                                            <small class="text-muted">
+                                                                <?php echo e($row->internal_audit_approval_at ? $row->internal_audit_approval_at->format('d/m/Y H:i') : ''); ?>
+
+                                                            </small>
+                                                            <?php if($row->internalAuditApprovalBy): ?>
+                                                                <br><small class="text-muted">by
+                                                                    <?php echo e($row->internalAuditApprovalBy->name); ?></small>
+                                                            <?php endif; ?>
+                                                            <?php if($row->internal_audit_approval_notes): ?>
+                                                                <br><small class="text-danger"><i
+                                                                        class="fas fa-sticky-note"></i>
+                                                                    <?php echo e(Str::limit($row->internal_audit_approval_notes, 50)); ?></small>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    <?php else: ?>
+                                                        <?php if($isInternalAudit): ?>
+                                                            <div class="btn-group-vertical gap-1">
+                                                                <button type="button"
+                                                                    class="btn btn-success btn-sm internal-audit-btn"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
+                                                                    data-action="approve">
+                                                                    <i class="fas fa-check"></i> Approve
+                                                                </button>
+                                                                <button type="button"
+                                                                    class="btn btn-danger btn-sm internal-audit-btn"
+                                                                    data-question-id="<?php echo e($row->id); ?>"
+                                                                    data-action="reject">
+                                                                    <i class="fas fa-times"></i> Reject
+                                                                </button>
+                                                            </div>
+                                                        <?php else: ?>
+                                                            <span class="badge bg-secondary">
+                                                                <i class="fas fa-clock"></i> Pending
+                                                                <br><small class="text-muted">(Internal Audit only)</small>
+                                                            </span>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
                                                 </td>
 
                                                 <!-- COLUMN: FINAL VALIDASI BY AEO MGR -->
@@ -669,7 +757,7 @@
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <tr>
-                                            <td colspan="9" class="text-center py-4">
+                                            <td colspan="10" class="text-center py-4">
                                                 <div class="text-muted">
                                                     <i class="fas fa-inbox fa-2x mb-2"></i><br>
                                                     <?php if($isAeoOrAdmin): ?>
@@ -781,6 +869,52 @@
                         </button>
                         <button type="submit" class="btn btn-success" id="approvalSubmitBtn">
                             <i class="fas fa-check"></i> Approve
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Internal Audit Approval Modal -->
+    <div class="modal fade" id="internalAuditModal" tabindex="-1" aria-labelledby="internalAuditModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="internalAuditModalLabel">
+                        <i class="fas fa-clipboard-check text-primary"></i>
+                        Internal Audit Approval
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="internalAuditForm">
+                    <?php echo csrf_field(); ?>
+                    <div class="modal-body">
+                        <input type="hidden" id="internalAuditQuestionId" name="question_id">
+                        <input type="hidden" id="internalAuditAction" name="action">
+
+                        <div class="alert" id="internalAuditAlert">
+                            <i class="fas fa-info-circle"></i>
+                            <span id="internalAuditMessage">You are about to process this internal audit approval.</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="internalAuditNotes" class="form-label">
+                                <i class="fas fa-sticky-note"></i> Notes (Optional)
+                            </label>
+                            <textarea class="form-control" id="internalAuditNotes" name="notes" rows="3"
+                                placeholder="Add any notes for this internal audit decision..."></textarea>
+                            <div class="form-text">You can add optional notes to document the internal audit decision.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn" id="internalAuditSubmitBtn">
+                            <i class="fas fa-check"></i> Submit
                         </button>
                     </div>
                 </form>
@@ -994,7 +1128,8 @@
                         "orderable": true
                     },
                     {
-                        "targets": [5, 6, 7], // Detail, Validasi, Approval, Aksi columns
+                        "targets": [5, 6, 7, 8,
+                        9], // Detail, Internal Audit, Validasi, Approval, Aksi columns
                         "orderable": false
                     }
                 ],
@@ -1472,6 +1607,104 @@
                 $('#approvalQuestionId').val('');
                 $('#approvalType').val('');
                 $('#approvalNotes').val('');
+            });
+
+            // Handle Internal Audit Approval buttons
+            $('.internal-audit-btn').on('click', function() {
+                const button = $(this);
+                const questionId = button.data('question-id');
+                const action = button.data('action');
+
+                // Set modal data
+                $('#internalAuditQuestionId').val(questionId);
+                $('#internalAuditAction').val(action);
+
+                // Update modal styling and text based on action
+                const alertDiv = $('#internalAuditAlert');
+                const submitBtn = $('#internalAuditSubmitBtn');
+
+                if (action === 'approve') {
+                    alertDiv.removeClass('alert-danger').addClass('alert-success');
+                    $('#internalAuditMessage').text(
+                        'You are about to approve this question for internal audit.');
+                    submitBtn.removeClass('btn-danger').addClass('btn-success').html(
+                        '<i class="fas fa-check"></i> Approve');
+                } else {
+                    alertDiv.removeClass('alert-success').addClass('alert-danger');
+                    $('#internalAuditMessage').text(
+                        'You are about to reject this question for internal audit.');
+                    submitBtn.removeClass('btn-success').addClass('btn-danger').html(
+                        '<i class="fas fa-times"></i> Reject');
+                }
+
+                // Show modal
+                $('#internalAuditModal').modal('show');
+            });
+
+            // Handle Internal Audit Form submission
+            $('#internalAuditForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const form = $(this);
+                const questionId = $('#internalAuditQuestionId').val();
+                const action = $('#internalAuditAction').val();
+                const notes = $('#internalAuditNotes').val().trim();
+
+                // Show loading state
+                $('#internalAuditSubmitBtn').prop('disabled', true).html(
+                    '<i class="fas fa-spinner fa-spin"></i> Processing...');
+
+                const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+                fetch(`/aeo/questions/${questionId}/internal-audit-approval`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            action: action,
+                            notes: notes
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast(data.message, 'success');
+
+                            // Hide modal
+                            $('#internalAuditModal').modal('hide');
+
+                            // Refresh the page to show updated status
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            showToast(data.message || `Error processing Internal Audit ${action}`,
+                                'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast(`Error processing Internal Audit ${action}`, 'error');
+                    })
+                    .finally(() => {
+                        // Re-enable button
+                        const action = $('#internalAuditAction').val();
+                        const icon = action === 'approve' ? 'check' : 'times';
+                        const text = action === 'approve' ? 'Approve' : 'Reject';
+                        $('#internalAuditSubmitBtn').prop('disabled', false).html(
+                            `<i class="fas fa-${icon}"></i> ${text}`);
+                    });
+            });
+
+            // Reset internal audit modal when closed
+            $('#internalAuditModal').on('hidden.bs.modal', function() {
+                $('#internalAuditForm')[0].reset();
+                $('#internalAuditQuestionId').val('');
+                $('#internalAuditAction').val('');
+                $('#internalAuditNotes').val('');
             });
         });
     </script>

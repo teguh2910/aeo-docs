@@ -26,6 +26,9 @@ Route::middleware('auth')->group(function () {
     // Approval route
     Route::post('aeo/questions/{question}/approval', [AeoQuestionController::class, 'processApproval'])->name('aeo.questions.approval');
 
+    // Internal Audit Approval route
+    Route::post('aeo/questions/{question}/internal-audit-approval', [AeoQuestionController::class, 'processInternalAuditApproval'])->name('aeo.questions.internal-audit-approval');
+
     // Excel import routes for questions
     Route::get('aeo/questions/import', [AeoQuestionController::class, 'importForm'])->name('aeo.questions.import.form');
     Route::post('aeo/questions/import', [AeoQuestionController::class, 'importExcel'])->name('aeo.questions.import');

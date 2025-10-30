@@ -14,13 +14,14 @@ class AeoQuestionController extends Controller
     {
         $userDept = auth()->user()->dept ?? 'GENERAL';
         $isAeoOrAdmin = in_array($userDept, ['AEO', 'admin']);
+        $isInternalAudit = $userDept === 'internal_audit';
 
         // Get filter parameter
         $filterDept = $request->get('dept');
 
-        // Get all unique departments for filter dropdown (only for AEO/admin)
+        // Get all unique departments for filter dropdown (only for AEO/admin/internal_audit)
         $departments = [];
-        if ($isAeoOrAdmin) {
+        if ($isAeoOrAdmin || $isInternalAudit) {
             $departments = AeoQuestion::select('dept')
                 ->distinct()
                 ->whereNotNull('dept')
@@ -33,22 +34,22 @@ class AeoQuestionController extends Controller
         $query = AeoQuestion::query();
 
         // Apply department filter based on user role
-        if (! $isAeoOrAdmin) {
+        if (! $isAeoOrAdmin && ! $isInternalAudit) {
             // Regular users can only see their department
             $query->where('dept', $userDept);
         } elseif ($filterDept && $filterDept !== 'all') {
-            // AEO/admin can filter by specific department
+            // AEO/admin/internal_audit can filter by specific department
             $query->where('dept', $filterDept);
         }
-        // If no filter or 'all' is selected, AEO/admin see everything
+        // If no filter or 'all' is selected, AEO/admin/internal_audit see everything
 
         $rows = $query->with([
-            'documents' => function ($query) use ($userDept, $isAeoOrAdmin, $filterDept) {
+            'documents' => function ($query) use ($userDept, $isAeoOrAdmin, $isInternalAudit, $filterDept) {
                 // For regular users, show only their dept documents
-                if (! $isAeoOrAdmin) {
+                if (! $isAeoOrAdmin && ! $isInternalAudit) {
                     $query->where('dept', $userDept);
                 } elseif ($filterDept && $filterDept !== 'all') {
-                    // For AEO/admin with filter, show filtered dept documents
+                    // For AEO/admin/internal_audit with filter, show filtered dept documents
                     $query->where('dept', $filterDept);
                 }
                 // Otherwise show all documents
@@ -57,6 +58,7 @@ class AeoQuestionController extends Controller
             'documents.validator',
             'approval1By',
             'approval2By',
+            'internalAuditApprovalBy',
         ])
             ->orderBy('subcriteria')
             ->orderBy('id')
@@ -359,6 +361,55 @@ class AeoQuestionController extends Controller
                 'message' => $message,
                 'approval_type' => $approvalType,
                 'approved_at' => $question->{'approval_'.$approvalType.'_at'},
+                'approved_by' => auth()->user()->name ?? 'Unknown User',
+            ]);
+        }
+
+        return redirect()->route('aeo.questions.index')->with('success', $message);
+    }
+
+    public function processInternalAuditApproval(Request $request, AeoQuestion $question)
+    {
+        $userDept = auth()->user()->dept ?? 'GENERAL';
+
+        // Only internal_audit dept can process internal audit approvals
+        if ($userDept !== 'internal_audit') {
+            abort(403, 'Only Internal Audit department can process internal audit approvals.');
+        }
+
+        $request->validate([
+            'action' => 'required|in:approve,reject',
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        $action = $request->action;
+        $notes = $request->notes;
+
+        // Check if this approval has already been processed
+        if ($question->internal_audit_approval !== null) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Internal Audit Approval has already been processed for this question.',
+            ], 422);
+        }
+
+        // Update the question with internal audit approval data
+        $question->update([
+            'internal_audit_approval' => $action === 'approve' ? true : false,
+            'internal_audit_approval_at' => now(),
+            'internal_audit_approval_by' => auth()->id(),
+            'internal_audit_approval_notes' => $notes,
+        ]);
+
+        $message = 'Internal Audit Approval '.($action === 'approve' ? 'approved' : 'rejected').' successfully for question: '.$question->question;
+
+        // Handle AJAX requests
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'action' => $action,
+                'approved_at' => $question->internal_audit_approval_at,
                 'approved_by' => auth()->user()->name ?? 'Unknown User',
             ]);
         }

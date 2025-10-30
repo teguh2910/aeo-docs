@@ -22,14 +22,20 @@ class AeoQuestion extends Model
         'approval_2_at',
         'approval_2_by',
         'approval_2_notes',
+        'internal_audit_approval',
+        'internal_audit_approval_at',
+        'internal_audit_approval_by',
+        'internal_audit_approval_notes',
     ];
 
     protected $casts = [
         'files' => 'array',
         'approval_1' => 'boolean',
         'approval_2' => 'boolean',
+        'internal_audit_approval' => 'boolean',
         'approval_1_at' => 'datetime',
         'approval_2_at' => 'datetime',
+        'internal_audit_approval_at' => 'datetime',
     ];
 
     public function documents(): HasMany
@@ -45,5 +51,10 @@ class AeoQuestion extends Model
     public function approval2By(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(\App\Models\User::class, 'approval_2_by');
+    }
+
+    public function internalAuditApprovalBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\User::class, 'internal_audit_approval_by');
     }
 }
