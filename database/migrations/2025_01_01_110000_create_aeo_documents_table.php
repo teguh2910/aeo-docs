@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('nama_dokumen');
             $table->string('no_sop_wi_std_form_other')->nullable();
             // multiple file paths stored as JSON, e.g. ["aeo/uuid1.pdf", "aeo/uuid2.jpg"]
-            $table->json('files')->nullable();
+            $table->text('files')->nullable();
             $table->foreignId('created_by')->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->timestamps();
